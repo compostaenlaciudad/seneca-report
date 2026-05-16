@@ -1,47 +1,63 @@
 import { createServerSupabaseClient } from './supabase-server'
 import type { Politician, Dimension, Flag, TimelineEntry, EducationEntry, AssetEntry } from './types'
 
+const DIMENSION_NAME_MAP: Record<string, string> = {
+  integridad_filosofica:     'Integridad filosófica',
+  coherencia_hechos:         'Coherencia dichos / hechos',
+  transparencia_patrimonial: 'Transparencia patrimonial',
+  rendicion_cuentas:         'Rendición de cuentas',
+  independencia_poder:       'Independencia del poder',
+}
+
+const FLAG_TYPE_MAP: Record<string, string> = {
+  conflict_of_interest: 'Conflicto de interés',
+  asset_discrepancy:    'Inconsistencia patrimonial',
+  legal_proceeding:     'Proceso legal documentado',
+  broken_promise:       'Promesa incumplida',
+  sanction:             'Sanción oficial',
+}
+
 export async function getAllPoliticians(): Promise<Politician[]> {
   const supabase = await createServerSupabaseClient()
 
   const { data: candidates, error } = await supabase
     .from('candidates')
     .select(`
-        id,
-        slug,
+      id,
+      slug,
+      name,
+      party,
+      state,
+      office_sought,
+      current_position,
+      years_in_politics,
+      seneca_score,
+      risk_level,
+      summary_es,
+      last_updated,
+      score_dimensions (
         name,
-        party,
-        state,
-        office_sought,
-        current_position,
-        years_in_politics,
-        seneca_score,
-        risk_level,
-        summary_es,
-        last_updated,
-        score_dimensions (
-          name,
-          score,
-          reasoning
-        ),
-        flags (
-          type,
-          description,
-          severity,
-          source_url,
-          date
-        ),
-        education (
-          institution,
-          degree,
-          field,
-          year,
-          verified
-        ),
-        sources (
-          id
-        )
-      `)
+        score,
+        reasoning
+      ),
+      flags (
+        type,
+        description,
+        severity,
+        source_url,
+        date
+      ),
+      education (
+        institution,
+        degree,
+        field,
+        year,
+        verified
+      ),
+      sources (
+        id
+      )
+    `)
     .order('seneca_score', { ascending: false })
 
   if (error || !candidates) return []
@@ -106,13 +122,14 @@ export async function getPoliticianBySlug(slug: string): Promise<Politician | un
 function mapCandidate(c: any): Politician {
   const dimensions: Dimension[] = (c.score_dimensions ?? []).map((d: any) => ({
     key: d.name,
+    label: DIMENSION_NAME_MAP[d.name] ?? d.name.replace(/_/g, ' '),
     score: d.score * 5,
-    note: d.reasoning?.slice(0, 80) + '…',
+    note: d.reasoning?.slice(0, 100) + '…',
   }))
 
   const flags: Flag[] = (c.flags ?? []).map((f: any) => ({
     severity: mapSeverity(f.severity),
-    title: f.type.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
+    title: FLAG_TYPE_MAP[f.type] ?? f.type.replace(/_/g, ' '),
     body: f.description,
     sources: [f.source_url ?? ''].filter(Boolean),
   }))
@@ -124,7 +141,6 @@ function mapCandidate(c: any): Politician {
     verified: e.verified ?? false,
   }))
 
-  // initials from name
   const initials = c.name
     .split(' ')
     .filter((_: string, i: number) => i === 0 || i === 1)
@@ -142,6 +158,7 @@ function mapCandidate(c: any): Politician {
     photo: initials,
     score: c.seneca_score ?? 0,
     risk: mapRisk(c.risk_level),
+    bio: c.summary_es ?? '',
     dimensions,
     flags,
     timeline: [] as TimelineEntry[],

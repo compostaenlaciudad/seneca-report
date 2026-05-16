@@ -58,4 +58,5 @@ export interface Politician {
   assets: AssetEntry[];
   lastUpdated: string; // ISO date
   sourceCount: number;
+  bio?: string
 }

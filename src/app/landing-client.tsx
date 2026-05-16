@@ -37,17 +37,17 @@ export function LandingClient({ politicians }: { politicians: Politician[] }) {
 
       {/* Hero */}
       <section style={{ padding: '88px 28px 56px', maxWidth: 1080, margin: '0 auto' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 28 }}>
-          <Pill>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 28 }}>
+        <Pill>
             <span style={{ width: 6, height: 6, background: 'var(--ok)', borderRadius: '50%' }} />
             Activo · {politicians.length} expedientes públicos
-          </Pill>
-          <Pill>Open source · CC BY-SA</Pill>
-        </div>
+        </Pill>
+        <Pill>Open source · CC BY-SA</Pill>
+      </div>
 
-        <h1
-          className="serif"
-          style={{
+      <h1
+        className="serif"
+        style={{
             fontSize: 76,
             lineHeight: 0.96,
             fontWeight: 500,
@@ -55,24 +55,29 @@ export function LandingClient({ politicians }: { politicians: Politician[] }) {
             letterSpacing: '-0.025em',
             margin: '0 0 20px',
             maxWidth: 880,
-          }}
+        }}
         >
-          Datos públicos. Expedientes verificables. Para votantes mexicanos.
-        </h1>
+        El expediente que tus políticos<br />
+        <span style={{ color: 'var(--accent)' }}>no quieren que leas.</span>
+      </h1>
 
-        <p
-          style={{
-            fontSize: 17,
-            lineHeight: 1.55,
-            color: 'var(--text-2)',
-            maxWidth: 560,
-            marginBottom: 36,
-          }}
-        >
-          Séneca rastrea declaraciones patrimoniales, votos y conflictos de
-          interés de políticos en activo. Cada dato remite a una fuente pública.
-          Sin patrocinadores. Sin opinión editorial.
-        </p>
+      <p
+  style={{
+    fontSize: 17,
+    lineHeight: 1.55,
+    color: 'var(--text-2)',
+    maxWidth: 560,
+    marginBottom: 36,
+  }}
+>
+  Cada semana, millones de mexicanos toman decisiones políticas
+  basadas en publicidad disfrazada de información. Séneca existe
+  para que eso cambie. Datos verificados, fuentes citadas, sin
+  patrocinadores.{' '}
+  <span style={{ color: 'var(--text)', fontWeight: 500 }}>
+    El antídoto al algoritmo.
+  </span>
+</p>
 
         {/* Search */}
         <form

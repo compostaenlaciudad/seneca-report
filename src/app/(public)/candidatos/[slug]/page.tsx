@@ -35,40 +35,58 @@ export default async function ProfilePage({ params }: { params: Promise<{ slug: 
     <div style={{ minHeight: '100vh', background: 'var(--bg)', color: 'var(--text)' }}>
       <TopNav active="Buscar" />
 
-      {/* breadcrumb */}
-      <div
+{/* breadcrumb */}
+<div
+  style={{
+    padding: '12px 28px',
+    borderBottom: '1px solid var(--border)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+  }}
+>
+  <Mono size={11} color="var(--muted)">Expedientes</Mono>
+  <Mono size={11} color="var(--muted)">/</Mono>
+  <Mono size={11} color="var(--muted)">Senado · MX</Mono>
+  <Mono size={11} color="var(--muted)">/</Mono>
+  <Mono size={11} color="var(--text)">{p.name.split(' ').slice(0, 2).join(' ')}</Mono>
+  <div style={{ marginLeft: 'auto', display: 'flex', gap: 6 }}>
+    <a
+      href={`/card/${p.slug}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        fontSize: 12,
+        fontWeight: 500,
+        color: 'var(--text-2)',
+        padding: '5px 10px',
+        border: '1px solid var(--border)',
+        borderRadius: 6,
+        background: 'transparent',
+        cursor: 'pointer',
+        textDecoration: 'none',
+      }}
+    >
+      Compartir
+    </a>
+    {['PDF', 'Citar', 'Comparar'].map((b) => (
+      <button
+        key={b}
         style={{
-          padding: '12px 28px',
-          borderBottom: '1px solid var(--border)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 8,
+          fontSize: 12,
+          fontWeight: 500,
+          color: 'var(--text-2)',
+          padding: '5px 10px',
+          border: '1px solid var(--border)',
+          borderRadius: 6,
+          background: 'transparent',
         }}
       >
-        <Mono size={11} color="var(--muted)">Expedientes</Mono>
-        <Mono size={11} color="var(--muted)">/</Mono>
-        <Mono size={11} color="var(--muted)">Senado · MX</Mono>
-        <Mono size={11} color="var(--muted)">/</Mono>
-        <Mono size={11} color="var(--text)">{p.name.split(' ').slice(0, 2).join(' ')}</Mono>
-        <div style={{ marginLeft: 'auto', display: 'flex', gap: 6 }}>
-          {['Compartir', 'PDF', 'Citar', 'Comparar'].map((b) => (
-            <button
-              key={b}
-              style={{
-                fontSize: 12,
-                fontWeight: 500,
-                color: 'var(--text-2)',
-                padding: '5px 10px',
-                border: '1px solid var(--border)',
-                borderRadius: 6,
-                background: 'transparent',
-              }}
-            >
-              {b}
-            </button>
-          ))}
-        </div>
-      </div>
+        {b}
+      </button>
+    ))}
+  </div>
+</div>
 
       {/* hero band */}
       <section
@@ -114,6 +132,17 @@ export default async function ProfilePage({ params }: { params: Promise<{ slug: 
               <Pill>Verificado por 2 revisores</Pill>
               <Pill>Actualizado {p.lastUpdated}</Pill>
             </div>
+            {p.bio && (
+            <p style={{
+                fontSize: 14,
+                lineHeight: 1.6,
+                color: 'var(--text-2)',
+                maxWidth: 580,
+                marginTop: 14,
+            }}>
+                {p.bio}
+            </p>
+            )}
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

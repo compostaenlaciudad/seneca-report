@@ -20,6 +20,13 @@ const HOW_IT_WORKS = [
   ['05', 'Conflictos de interés',  'Vínculos económicos y familiares'],
 ] as const;
 
+const INSTALL_STEPS = [
+  ['01', 'Descarga', 'Descarga el archivo ZIP de la extensión'],
+  ['02', 'Descomprime', 'Descomprime el archivo en cualquier carpeta'],
+  ['03', 'Activa', 'Abre chrome://extensions y activa "Modo desarrollador"'],
+  ['04', 'Carga', 'Haz clic en "Cargar sin empaquetar" y selecciona la carpeta'],
+] as const;
+
 export function LandingClient({ politicians }: { politicians: Politician[] }) {
   const router = useRouter();
   const [q, setQ] = useState('');
@@ -37,17 +44,17 @@ export function LandingClient({ politicians }: { politicians: Politician[] }) {
 
       {/* Hero */}
       <section style={{ padding: '88px 28px 56px', maxWidth: 1080, margin: '0 auto' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 28 }}>
-        <Pill>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 28 }}>
+          <Pill>
             <span style={{ width: 6, height: 6, background: 'var(--ok)', borderRadius: '50%' }} />
             Activo · {politicians.length} expedientes públicos
-        </Pill>
-        <Pill>Open source · CC BY-SA</Pill>
-      </div>
+          </Pill>
+          <Pill>Open source · CC BY-SA</Pill>
+        </div>
 
-      <h1
-        className="serif"
-        style={{
+        <h1
+          className="serif"
+          style={{
             fontSize: 76,
             lineHeight: 0.96,
             fontWeight: 500,
@@ -55,29 +62,29 @@ export function LandingClient({ politicians }: { politicians: Politician[] }) {
             letterSpacing: '-0.025em',
             margin: '0 0 20px',
             maxWidth: 880,
-        }}
+          }}
         >
-        El expediente que tus políticos<br />
-        <span style={{ color: 'var(--accent)' }}>no quieren que leas.</span>
-      </h1>
+          El expediente que tus políticos<br />
+          <span style={{ color: 'var(--accent)' }}>no quieren que leas.</span>
+        </h1>
 
-      <p
-  style={{
-    fontSize: 17,
-    lineHeight: 1.55,
-    color: 'var(--text-2)',
-    maxWidth: 560,
-    marginBottom: 36,
-  }}
->
-  Cada semana, millones de mexicanos toman decisiones políticas
-  basadas en publicidad disfrazada de información. Séneca existe
-  para que eso cambie. Datos verificados, fuentes citadas, sin
-  patrocinadores.{' '}
-  <span style={{ color: 'var(--text)', fontWeight: 500 }}>
-    El antídoto al algoritmo.
-  </span>
-</p>
+        <p
+          style={{
+            fontSize: 17,
+            lineHeight: 1.55,
+            color: 'var(--text-2)',
+            maxWidth: 560,
+            marginBottom: 36,
+          }}
+        >
+          Cada semana, millones de mexicanos toman decisiones políticas
+          basadas en publicidad disfrazada de información. Séneca existe
+          para que eso cambie. Datos verificados, fuentes citadas, sin
+          patrocinadores.{' '}
+          <span style={{ color: 'var(--text)', fontWeight: 500 }}>
+            El antídoto al algoritmo.
+          </span>
+        </p>
 
         {/* Search */}
         <form
@@ -157,6 +164,170 @@ export function LandingClient({ politicians }: { politicians: Politician[] }) {
               {p.name.split(' ').slice(0, 2).join(' ')}
             </button>
           ))}
+        </div>
+      </section>
+
+      {/* Extension install section */}
+      <section style={{
+        padding: '0 28px 64px',
+        maxWidth: 1080,
+        margin: '0 auto',
+      }}>
+        <div style={{
+          border: '1px solid var(--border)',
+          borderRadius: 14,
+          background: 'var(--surface)',
+          overflow: 'hidden',
+        }}>
+          {/* Header row */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr auto',
+            alignItems: 'center',
+            padding: '24px 28px',
+            borderBottom: '1px solid var(--border)',
+            gap: 24,
+          }}>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                <span style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 32,
+                  height: 32,
+                  background: '#1d4ed8',
+                  borderRadius: 6,
+                  fontSize: 16,
+                  color: '#fff',
+                }}>⚖</span>
+                <div>
+                  <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--text)' }}>
+                    SÉNECA — Escudo político
+                  </div>
+                  <div style={{ fontSize: 11, color: 'var(--muted)', marginTop: 1 }}>
+                    Extensión para Chrome · Arc · Brave · Edge · Gratis · Código abierto
+                  </div>
+                </div>
+              </div>
+              <p style={{ fontSize: 13, color: 'var(--text-2)', lineHeight: 1.5, maxWidth: 560 }}>
+                Detecta políticos mexicanos en cualquier página web — incluyendo Facebook, Twitter y sitios de noticias —
+                y muestra su expediente verificado en tiempo real. Sin registro. Sin suscripción.
+              </p>
+            </div>
+            <a
+              href="/seneca-extension.zip"
+              download
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                background: '#1d4ed8',
+                color: '#fff',
+                fontSize: 14,
+                fontWeight: 600,
+                padding: '12px 20px',
+                borderRadius: 8,
+                textDecoration: 'none',
+                whiteSpace: 'nowrap',
+                flexShrink: 0,
+              }}
+            >
+              <svg width={14} height={14} viewBox="0 0 14 14" fill="none">
+                <path d="M7 1v8M4 6l3 3 3-3M2 11h10" stroke="#fff" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              Descargar extensión
+            </a>
+          </div>
+
+          {/* Steps */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(4, 1fr)',
+            gap: 0,
+          }}>
+            {INSTALL_STEPS.map(([n, label, desc], i) => (
+              <div
+                key={n}
+                style={{
+                  padding: '20px 22px',
+                  borderRight: i < 3 ? '1px solid var(--border)' : 'none',
+                  position: 'relative',
+                }}
+              >
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  marginBottom: 10,
+                }}>
+                  <span style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: 22,
+                    height: 22,
+                    borderRadius: '50%',
+                    background: '#1d4ed8',
+                    color: '#fff',
+                    fontSize: 10,
+                    fontWeight: 700,
+                    fontFamily: 'monospace',
+                    flexShrink: 0,
+                  }}>{n}</span>
+                  <span style={{
+                    fontSize: 12,
+                    fontWeight: 600,
+                    color: 'var(--text)',
+                    letterSpacing: '0.02em',
+                  }}>{label}</span>
+                </div>
+                <p style={{
+                  fontSize: 12,
+                  lineHeight: 1.55,
+                  color: 'var(--text-2)',
+                  margin: 0,
+                }}>
+                  {n === '03' ? (
+                    <>Abre{' '}
+                      <code style={{
+                        fontSize: 11,
+                        background: 'var(--bg)',
+                        border: '1px solid var(--border)',
+                        borderRadius: 3,
+                        padding: '1px 4px',
+                        fontFamily: 'monospace',
+                      }}>chrome://extensions</code>
+                      {' '}y activa{' '}
+                      <strong style={{ color: 'var(--text)' }}>"Modo desarrollador"</strong>
+                    </>
+                  ) : n === '04' ? (
+                    <>Haz clic en{' '}
+                      <strong style={{ color: 'var(--text)' }}>"Cargar sin empaquetar"</strong>
+                      {' '}y selecciona la carpeta descargada
+                    </>
+                  ) : desc}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* Footer note */}
+          <div style={{
+            padding: '14px 28px',
+            borderTop: '1px solid var(--border)',
+            background: 'var(--bg)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}>
+            <Mono size={10} color="var(--muted)">
+              ✓ Sin registro · ✓ Sin acceso a tus datos · ✓ Código abierto en GitHub
+            </Mono>
+            <Mono size={10} color="var(--muted)">
+              Próximamente en Chrome Web Store
+            </Mono>
+          </div>
         </div>
       </section>
 

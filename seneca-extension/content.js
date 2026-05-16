@@ -4,17 +4,72 @@ const API_BASE = 'https://seneca-report.vercel.app/api/politicians'
 //const API_BASE = 'http://localhost:3000/api/politicians'
 
 const POLITICIAN_NAMES = [
+  // Claudia Sheinbaum
+  'Claudia Sheinbaum Pardo',
+  'Claudia Sheinbaum',
+
+  // Ricardo Monreal
   'Ricardo Monreal Ávila',
   'Ricardo Monreal',
-  'Xóchitl Gálvez Ruiz',
-  'Xóchitl Gálvez',
+
+  // Rubén Rocha Moya
+  'Rubén Rocha Moya',
+  'Rubén Rocha',
+  'Rocha Moya',
+
+  // Alejandro Moreno
+  'Alejandro Moreno Cárdenas',
+  'Alejandro Moreno',
+  'Alito Moreno',
+
+  // Layda Sansores
+  'Layda Sansores San Román',
+  'Layda Sansores',
+
+  // Manuel Velasco
   'Manuel Velasco Coello',
   'Manuel Velasco',
+
+  // Jorge Romero
   'Jorge Romero Herrera',
   'Jorge Romero',
+
+  // Xóchitl Gálvez
+  'Xóchitl Gálvez Ruiz',
+  'Xóchitl Gálvez',
+
+  // Jorge Álvarez Máynez
+  'Jorge Álvarez Máynez',
+  'Álvarez Máynez',
+
+  // Alejandra Lagunes
   'Alejandra Lagunes Soto Ruiz',
   'Alejandra Lagunes',
 ]
+
+const NAME_TO_QUERY = {
+  'alito moreno': 'alejandro moreno',
+  'rocha moya': 'rubén rocha',
+  'álvarez máynez': 'jorge álvarez',
+}
+
+async function fetchPolitician(name) {
+  const key = name.toLowerCase()
+  if (cache[key]) return cache[key]
+
+  const query = NAME_TO_QUERY[key] ?? name
+
+  try {
+    const res = await fetch(`${API_BASE}?q=${encodeURIComponent(query)}`)
+    if (!res.ok) return null
+    const data = await res.json()
+    const match = data.politicians?.[0]
+    if (match) cache[key] = match
+    return match ?? null
+  } catch {
+    return null
+  }
+}
 
 const cache = {}
 let activePanel = null

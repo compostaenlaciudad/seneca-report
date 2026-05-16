@@ -7,38 +7,41 @@ export async function getAllPoliticians(): Promise<Politician[]> {
   const { data: candidates, error } = await supabase
     .from('candidates')
     .select(`
-      id,
-      slug,
-      name,
-      party,
-      state,
-      office_sought,
-      current_position,
-      years_in_politics,
-      seneca_score,
-      risk_level,
-      summary_es,
-      last_updated,
-      score_dimensions (
+        id,
+        slug,
         name,
-        score,
-        reasoning
-      ),
-      flags (
-        type,
-        description,
-        severity,
-        source_url,
-        date
-      ),
-      education (
-        institution,
-        degree,
-        field,
-        year,
-        verified
-      )
-    `)
+        party,
+        state,
+        office_sought,
+        current_position,
+        years_in_politics,
+        seneca_score,
+        risk_level,
+        summary_es,
+        last_updated,
+        score_dimensions (
+          name,
+          score,
+          reasoning
+        ),
+        flags (
+          type,
+          description,
+          severity,
+          source_url,
+          date
+        ),
+        education (
+          institution,
+          degree,
+          field,
+          year,
+          verified
+        ),
+        sources (
+          id
+        )
+      `)
     .order('seneca_score', { ascending: false })
 
   if (error || !candidates) return []

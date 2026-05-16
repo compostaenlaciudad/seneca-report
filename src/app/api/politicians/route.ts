@@ -83,8 +83,8 @@ export async function GET(request: NextRequest) {
         source: topFlag.source_url,
       } : null,
       flagCount: (c.flags ?? []).length,
-      profileUrl: `https://seneca.report/candidatos/${c.slug}`,
-      cardUrl: `https://seneca.report/card/${c.slug}`,
+      profileUrl: `https://seneca-report.vercel.app/candidatos/${c.slug}`,
+      cardUrl: `https://seneca-report.vercel.app/card/${c.slug}`,
     }
   })
 

@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 
-import { findPolitician } from '@/lib/data';
+import { getPoliticianBySlug } from '@/lib/supabase-queries'
 import { fmtMxn, pillKindForRisk } from '@/lib/utils';
 import type { Politician } from '@/lib/types';
 
@@ -24,8 +24,8 @@ const TABS = [
 
 export default async function ProfilePage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
-    const p = findPolitician(slug)
-  if (!p) notFound();
+    const p = await getPoliticianBySlug(slug)
+    if (!p) notFound()
 
   const criticalCount = p.flags.filter((f) => f.severity === 'A').length;
   const graveCount    = p.flags.filter((f) => f.severity === 'B').length;

@@ -1,19 +1,19 @@
-//const API_BASE = 'https://seneca.report/api/politicians'
+const API_BASE = 'https://seneca-report.vercel.app/api/politicians'
 
 // For local dev testing, swap to:
-const API_BASE = 'http://localhost:3000/api/politicians'
+//const API_BASE = 'http://localhost:3000/api/politicians'
 
 const POLITICIAN_NAMES = [
+  'Ricardo Monreal Ávila',
   'Ricardo Monreal',
-  'Monreal Ávila',
+  'Xóchitl Gálvez Ruiz',
   'Xóchitl Gálvez',
-  'Gálvez Ruiz',
+  'Manuel Velasco Coello',
   'Manuel Velasco',
-  'Velasco Coello',
+  'Jorge Romero Herrera',
   'Jorge Romero',
-  'Romero Herrera',
+  'Alejandra Lagunes Soto Ruiz',
   'Alejandra Lagunes',
-  'Lagunes Soto',
 ]
 
 const cache = {}
@@ -116,18 +116,21 @@ function showPanel(politician, anchorEl) {
       </div>
     </div>
     <div class="seneca-panel-footer">
-      
-        href="${politician.profileUrl}"
-        target="_blank"
-        class="seneca-panel-link"
-      >
-        Ver expediente completo →
-      </a>
-      <span class="seneca-panel-source">seneca.report</span>
-    </div>
+  <span
+    class="seneca-panel-link"
+    data-url="${politician.profileUrl}"
+    style="cursor:pointer"
+  >
+    Ver expediente completo →
+  </span>
+  <span class="seneca-panel-source">seneca.report</span>
+</div>
   `
 
   document.body.appendChild(panel)
+  panel.querySelector('[data-url]').addEventListener('click', (e) => {
+    window.open(e.target.dataset.url, '_blank')
+  })
   activePanel = panel
 
   document.getElementById('seneca-close').addEventListener('click', closePanel)
@@ -138,6 +141,8 @@ function injectBadge(textNode, name, politician) {
   const parent = textNode.parentNode
   if (!parent || parent.classList?.contains('seneca-badge')) return
   if (parent.tagName === 'SCRIPT' || parent.tagName === 'STYLE') return
+
+  if (parent.querySelector?.('.seneca-badge')) return
 
   const text = textNode.textContent
   const idx = text.toLowerCase().indexOf(name.toLowerCase())

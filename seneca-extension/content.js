@@ -72,10 +72,10 @@ function scoreColor(score) {
 }
 
 function riskLabel(r) {
-  if (r === 'BAJO')     return { word: 'BAJO',    css: 'ok'   }
-  if (r === 'MODERADO') return { word: 'MODERADO',css: 'warn' }
-  if (r === 'ELEVADO')  return { word: 'ELEVADO', css: 'warn' }
-  return                       { word: 'ALTO',    css: 'alto' }
+  if (r === 'BAJO')     return { word: 'BAJO',     css: 'ok'   }
+  if (r === 'MODERADO') return { word: 'MODERADO', css: 'warn' }
+  if (r === 'ELEVADO')  return { word: 'ELEVADO',  css: 'warn' }
+  return                       { word: 'ALTO',     css: 'alto' }
 }
 
 function riskColors(css) {
@@ -223,13 +223,24 @@ function showPanel(politician) {
 
 function injectBadge(textNode, name, politician) {
   const parent = textNode.parentNode
-  if (!parent || parent.classList?.contains('seneca-badge')) return
+  if (!parent) return
+
+  // Skip seneca's own elements
+  if (parent.closest?.('.seneca-panel')) return
+  if (parent.closest?.('.seneca-badge')) return
+  if (parent.classList?.contains('seneca-badge')) return
   if (parent.tagName === 'SCRIPT' || parent.tagName === 'STYLE') return
+
+  // Skip if parent or ancestor already processed
+  if (parent.closest?.('[data-seneca-processed]')) return
   if (parent.querySelector?.('.seneca-badge')) return
 
   const text = textNode.textContent
   const idx = text.toLowerCase().indexOf(name.toLowerCase())
   if (idx === -1) return
+
+  // Mark parent as processed to prevent re-injection
+  try { parent.setAttribute('data-seneca-processed', 'true') } catch(e) {}
 
   const before = document.createTextNode(text.slice(0, idx))
   const after  = document.createTextNode(text.slice(idx + name.length))
@@ -304,6 +315,10 @@ function getTextNodes(root) {
           return NodeFilter.FILTER_REJECT
         if (p.classList?.contains('seneca-badge') || p.classList?.contains('seneca-panel'))
           return NodeFilter.FILTER_REJECT
+        if (p.closest?.('.seneca-panel') || p.closest?.('.seneca-badge'))
+          return NodeFilter.FILTER_REJECT
+        if (p.closest?.('[data-seneca-processed]'))
+          return NodeFilter.FILTER_REJECT
         if (processedNodes.has(node))
           return NodeFilter.FILTER_REJECT
         return NodeFilter.FILTER_ACCEPT
@@ -344,7 +359,6 @@ async function scanAndInject(root = document.body) {
 
 console.log('SENECA loaded')
 
-// Debounce helper
 function debounce(fn, ms) {
   let timer
   return (...args) => {
@@ -353,13 +367,11 @@ function debounce(fn, ms) {
   }
 }
 
-// Debounced scan so we don't fire on every tiny DOM change
 const debouncedScan = debounce((node) => {
   try { scanAndInject(node) } catch(e) {}
 }, 500)
 
 try {
-  // Delay initial scan so page can finish loading first
   setTimeout(() => {
     try { scanAndInject() } catch(e) { console.warn('SENECA scan error:', e) }
   }, 2000)
@@ -368,6 +380,12 @@ try {
     for (const mutation of mutations) {
       for (const node of mutation.addedNodes) {
         if (node.nodeType === Node.ELEMENT_NODE) {
+          if (
+            node.classList?.contains('seneca-panel') ||
+            node.classList?.contains('seneca-badge') ||
+            node.closest?.('.seneca-panel') ||
+            node.hasAttribute?.('data-seneca-processed')
+          ) continue
           debouncedScan(node)
         }
       }

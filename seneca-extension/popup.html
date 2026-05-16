@@ -272,11 +272,63 @@
     </div>
   </div>
 
-  <div class="status">
-    <span class="status-dot"></span>
-    <span class="status-text">Monitoreo activo</span>
-    <span class="status-meta">v0.4.1</span>
+  <div class="status" id="status-row">
+    <span class="status-dot" id="status-dot"></span>
+    <span class="status-text" id="status-text">Monitoreo activo</span>
+    <button id="toggle-btn" style="
+      background: #dc2626;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      font-family: ui-monospace, monospace;
+    ">PAUSAR</button>
   </div>
+  
+  <script>
+    const toggleBtn = document.getElementById('toggle-btn')
+    const statusDot = document.getElementById('status-dot')
+    const statusText = document.getElementById('status-text')
+  
+    chrome.storage.sync.get(['senecaEnabled'], (result) => {
+      const enabled = result.senecaEnabled !== false
+      updateUI(enabled)
+    })
+  
+    toggleBtn.addEventListener('click', () => {
+      chrome.storage.sync.get(['senecaEnabled'], (result) => {
+        const current = result.senecaEnabled !== false
+        const next = !current
+        
+        chrome.storage.sync.set({ senecaEnabled: next })
+        updateUI(next)
+  
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+          if (tabs[0]) {
+            chrome.tabs.sendMessage(tabs[0].id, { type: 'TOGGLE', enabled: next })
+          }
+        })
+      })
+    })
+  
+    function updateUI(enabled) {
+      if (enabled) {
+        statusDot.style.background = '#16a34a'
+        statusText.textContent = 'Monitoreo activo'
+        toggleBtn.textContent = 'PAUSAR'
+        toggleBtn.style.background = '#dc2626'
+      } else {
+        statusDot.style.background = '#94a3b8'
+        statusText.textContent = 'Pausado'
+        toggleBtn.textContent = 'ACTIVAR'
+        toggleBtn.style.background = '#16a34a'
+      }
+    }
+  </script>
 
   <div class="summary">
     <div class="summary-tile">

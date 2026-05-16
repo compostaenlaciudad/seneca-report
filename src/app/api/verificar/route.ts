@@ -112,8 +112,16 @@ Responde ÚNICAMENTE con un JSON válido sin texto adicional ni backticks:
 
     let result
     try {
-      result = JSON.parse(text)
+      // Strip markdown backticks if Claude wrapped the JSON
+      const clean = text
+        .replace(/^```json\s*/i, '')
+        .replace(/^```\s*/i, '')
+        .replace(/```\s*$/i, '')
+        .trim()
+      result = JSON.parse(clean)
     } catch {
+      // Log the raw text to debug
+      console.error('JSON parse failed. Raw text:', text)
       result = {
         verdict: 'SIN_VERIFICAR',
         confidence: 'BAJA',

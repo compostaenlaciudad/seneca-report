@@ -1,7 +1,7 @@
 const API_BASE = 'https://seneca-report.vercel.app/api/politicians'
 
 // For local dev testing, swap to:
-//const API_BASE = 'http://localhost:3000/api/politicians'
+// const API_BASE = 'http://localhost:3000/api/politicians'
 
 const POLITICIAN_NAMES = [
   // Claudia Sheinbaum
@@ -48,10 +48,43 @@ const POLITICIAN_NAMES = [
 ]
 
 const NAME_TO_QUERY = {
-  'alito moreno': 'alejandro moreno',
-  'rocha moya': 'rubén rocha',
+  'alito moreno':   'alejandro moreno',
+  'rocha moya':     'rubén rocha',
   'álvarez máynez': 'jorge álvarez',
 }
+
+const cache = {}
+let activePanel = null
+let processedNodes = new WeakSet()
+
+// ── Helpers ──────────────────────────────────────────────────
+
+function scoreClass(score) {
+  if (score >= 70) return 'seneca-ok'
+  if (score >= 45) return 'seneca-warn'
+  return ''
+}
+
+function scoreColor(score) {
+  if (score >= 70) return '#16a34a'
+  if (score >= 45) return '#d97706'
+  return '#dc2626'
+}
+
+function riskLabel(r) {
+  if (r === 'BAJO')     return { word: 'BAJO',     css: 'ok'   }
+  if (r === 'MODERADO') return { word: 'MODERADO', css: 'warn' }
+  if (r === 'ELEVADO')  return { word: 'ELEVADO',  css: 'warn' }
+  return                       { word: 'ALTO',     css: 'alto' }
+}
+
+function riskColors(css) {
+  if (css === 'ok')   return { color: '#16a34a', border: '#16a34a', bg: '#f0fdf4', soft: '#bbf7d0' }
+  if (css === 'warn') return { color: '#d97706', border: '#d97706', bg: '#fffbeb', soft: '#fde68a' }
+  return                     { color: '#dc2626', border: '#dc2626', bg: '#fef2f2', soft: '#fecaca' }
+}
+
+// ── API ──────────────────────────────────────────────────────
 
 async function fetchPolitician(name) {
   const key = name.toLowerCase()
@@ -71,43 +104,7 @@ async function fetchPolitician(name) {
   }
 }
 
-const cache = {}
-let activePanel = null
-let processedNodes = new WeakSet()
-
-function scoreClass(score) {
-  if (score >= 70) return 'seneca-ok'
-  if (score >= 45) return 'seneca-warn'
-  return ''
-}
-
-function scoreColor(score) {
-  if (score >= 70) return '#15803d'
-  if (score >= 45) return '#d97706'
-  return '#dc2626'
-}
-
-function riskStyle(risk) {
-  if (risk === 'BAJO')     return { bg: '#dcfce7', color: '#15803d', border: '#15803d' }
-  if (risk === 'MODERADO') return { bg: '#fef3c7', color: '#d97706', border: '#d97706' }
-  return { bg: '#fee2e2', color: '#dc2626', border: '#dc2626' }
-}
-
-async function fetchPolitician(name) {
-  const key = name.toLowerCase()
-  if (cache[key]) return cache[key]
-
-  try {
-    const res = await fetch(`${API_BASE}?q=${encodeURIComponent(name)}`)
-    if (!res.ok) return null
-    const data = await res.json()
-    const match = data.politicians?.[0]
-    if (match) cache[key] = match
-    return match ?? null
-  } catch {
-    return null
-  }
-}
+// ── Panel ────────────────────────────────────────────────────
 
 function closePanel() {
   if (activePanel) {
@@ -116,87 +113,112 @@ function closePanel() {
   }
 }
 
-function showPanel(politician, anchorEl) {
+function showPanel(politician) {
   closePanel()
 
-  const rs = riskStyle(politician.risk)
+  const rl = riskLabel(politician.risk)
+  const rc = riskColors(rl.css)
   const color = scoreColor(politician.score)
+
+  const caseId = 'SEN-' + String(
+    politician.id
+      ? parseInt(politician.id.replace(/-/g, '').slice(0, 8), 16) % 10000
+      : [...politician.name].reduce((a, c) => a + c.charCodeAt(0), 0) % 10000
+  ).toString().padStart(4, '0') + '-' + new Date().getFullYear()
 
   const panel = document.createElement('div')
   panel.className = 'seneca-panel'
   panel.innerHTML = `
     <div class="seneca-panel-header">
-      <span class="seneca-panel-logo">⚖ SÉNECA</span>
-      <button class="seneca-panel-close" id="seneca-close">✕</button>
+      <span class="seneca-panel-logo">
+        <span class="seneca-panel-logo-mark">⚖</span>
+        SÉNECA · EXPEDIENTE
+      </span>
+      <button class="seneca-panel-close" id="seneca-close" aria-label="Cerrar">✕</button>
     </div>
+
     <div class="seneca-panel-body">
+
+      <div class="seneca-panel-meta">
+        <span><strong>EXP.</strong> ${caseId}</span>
+        <span><strong>${politician.flagCount ?? 0}</strong> ALERTAS</span>
+      </div>
+
       <div class="seneca-panel-name">${politician.name}</div>
       <div class="seneca-panel-role">${politician.party} · ${politician.state}</div>
 
       <div class="seneca-panel-score-row">
-        <div>
-          <div class="seneca-panel-score" style="color: ${color}">${politician.score}</div>
-          <div class="seneca-panel-score-label">Índice Séneca / 100</div>
+        <div class="seneca-panel-score-block">
+          <div class="seneca-panel-score" style="color:${color}">
+            ${politician.score}<span class="seneca-panel-score-suffix">/100</span>
+          </div>
+          <div class="seneca-panel-score-label">Índice Séneca</div>
         </div>
-        <div
-          class="seneca-panel-risk"
-          style="background:${rs.bg}; color:${rs.color}; border: 1px solid ${rs.border}"
-        >
-          Riesgo ${politician.risk.toLowerCase()}
+        <div class="seneca-panel-risk"
+             style="color:${rc.color};border-color:${rc.border}">
+          <span class="seneca-panel-risk-prefix">RIESGO</span>
+          <span class="seneca-panel-risk-level">${rl.word}</span>
         </div>
       </div>
 
       ${politician.topFlag ? `
-        <div class="seneca-panel-flag">
-          <div class="seneca-panel-flag-label">▲ Alerta documentada · ${politician.flagCount} total</div>
+        <div class="seneca-panel-flag"
+             style="border-left-color:${rc.border};background:${rc.bg};border-color:${rc.soft}">
+          <div class="seneca-panel-flag-label" style="color:${rc.color}">
+            Alerta documentada · ${politician.flagCount} total
+          </div>
           <div class="seneca-panel-flag-title">${politician.topFlag.title}</div>
           <div class="seneca-panel-flag-body">${politician.topFlag.body}</div>
         </div>
       ` : ''}
 
+      <div class="seneca-panel-section-label">Dimensiones</div>
+
       <div class="seneca-panel-dims">
         ${(politician.dimensions ?? []).slice(0, 5).map(d => {
-          const dc = scoreColor(d.score * 5)
-          const shortLabel = (d.label ?? d.key ?? '').split(' ')[0]
+          const pct = d.score * 5
+          const dc = scoreColor(pct)
+          const label = (d.label ?? d.key ?? '').split(' ')[0].toUpperCase()
           return `
             <div class="seneca-panel-dim-row">
-              <span class="seneca-panel-dim-label">${shortLabel}</span>
+              <span class="seneca-panel-dim-label">${label}</span>
               <div class="seneca-panel-dim-bar-bg">
-                <div class="seneca-panel-dim-bar" style="width:${d.score * 5}%; background:${dc}"></div>
+                <div class="seneca-panel-dim-bar" style="width:${pct}%;background:${dc}"></div>
               </div>
-              <span class="seneca-panel-dim-score" style="color:${dc}">${d.score * 5}</span>
+              <span class="seneca-panel-dim-score">${pct}</span>
             </div>
           `
         }).join('')}
       </div>
+
     </div>
+
     <div class="seneca-panel-footer">
-  <span
-    class="seneca-panel-link"
-    data-url="${politician.profileUrl}"
-    style="cursor:pointer"
-  >
-    Ver expediente completo →
-  </span>
-  <span class="seneca-panel-source">seneca.report</span>
-</div>
+      <span class="seneca-panel-link" data-url="${politician.profileUrl}">
+        Ver expediente completo →
+      </span>
+      <span class="seneca-panel-source">seneca.report</span>
+    </div>
   `
 
   document.body.appendChild(panel)
-  panel.querySelector('[data-url]').addEventListener('click', (e) => {
-    window.open(e.target.dataset.url, '_blank')
-  })
   activePanel = panel
 
+  panel.querySelector('[data-url]').addEventListener('click', (e) => {
+    window.open(e.currentTarget.dataset.url, '_blank')
+  })
   document.getElementById('seneca-close').addEventListener('click', closePanel)
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel() }, { once: true })
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closePanel()
+  }, { once: true })
 }
+
+// ── Badge ────────────────────────────────────────────────────
 
 function injectBadge(textNode, name, politician) {
   const parent = textNode.parentNode
   if (!parent || parent.classList?.contains('seneca-badge')) return
   if (parent.tagName === 'SCRIPT' || parent.tagName === 'STYLE') return
-
   if (parent.querySelector?.('.seneca-badge')) return
 
   const text = textNode.textContent
@@ -208,12 +230,22 @@ function injectBadge(textNode, name, politician) {
 
   const badge = document.createElement('span')
   badge.className = `seneca-badge ${scoreClass(politician.score)}`
-  badge.title = `Índice Séneca: ${politician.score}/100 · ${politician.flagCount} alertas`
-  badge.innerHTML = `⚖ ${politician.score}`
+  badge.title = `Índice Séneca: ${politician.score}/100 · ${politician.flagCount} alertas documentadas`
+
+  const alerts = politician.flagCount > 0
+    ? `<span class="seneca-badge-alerts">▲${politician.flagCount}</span>`
+    : ''
+
+  badge.innerHTML = `
+    <span class="seneca-badge-brand">⚖</span>
+    <span class="seneca-badge-score">${politician.score}</span>
+    ${alerts}
+  `
+
   badge.addEventListener('click', (e) => {
     e.preventDefault()
     e.stopPropagation()
-    showPanel(politician, badge)
+    showPanel(politician)
   })
 
   const fragment = document.createDocumentFragment()
@@ -224,6 +256,8 @@ function injectBadge(textNode, name, politician) {
 
   parent.replaceChild(fragment, textNode)
 }
+
+// ── DOM scanning ─────────────────────────────────────────────
 
 function getTextNodes(root) {
   const walker = document.createTreeWalker(
@@ -273,10 +307,10 @@ async function scanAndInject(root = document.body) {
   }
 }
 
-// Initial scan
+// ── Init ─────────────────────────────────────────────────────
+
 scanAndInject()
 
-// Watch for dynamic content (Facebook loads content as you scroll)
 const observer = new MutationObserver((mutations) => {
   for (const mutation of mutations) {
     for (const node of mutation.addedNodes) {

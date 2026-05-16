@@ -1,244 +1,416 @@
+/* ============================================================
+   SENECA · overlay.css  (v2 — slate + blue)
+   Civic dossier aesthetic, aligned with seneca.report palette.
+   All styles namespaced .seneca-* to survive host-page CSS.
+   ============================================================ */
+
+/* ---------- Palette tokens (kept local to a single scope) ---------- */
+/* We don't expose CSS vars on :root because host pages might collide.
+   Hex values are inlined where needed. Reference legend:
+     --ink         #0f172a   slate-900
+     --surface     #ffffff
+     --paper       #f8fafc   slate-50
+     --rule        #e2e8f0   slate-200
+     --muted       #64748b   slate-500
+     --muted-2     #94a3b8   slate-400
+     --brand       #1d4ed8   blue-700 (links, header band)
+     --brand-deep  #1d4ed8   blue-900 (badge brand chip)
+     --red         #dc2626   risk alto
+     --amber       #d97706   risk moderado
+     --green       #16a34a   risk bajo
+     --red-soft    #fef2f2
+     --amber-soft  #fffbeb
+     --green-soft  #f0fdf4
+*/
+
+/* ---------- Shared font reset ---------- */
+.seneca-badge,
+.seneca-panel,
+.seneca-panel *,
+.seneca-badge * {
+  font-family: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace !important;
+  box-sizing: border-box !important;
+}
+.seneca-panel-name,
+.seneca-panel-flag-title,
+.seneca-panel-flag-body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui, sans-serif !important;
+}
+
+/* ============================================================
+   1. INLINE BADGE — "press credential"
+   Two-tone tag: navy brand chip + white score + alert count.
+   Compact (height 20px), reads as official, clearly clickable.
+   ============================================================ */
 .seneca-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    background: #ffffff;
-    border: 1.5px solid #dc2626;
-    border-radius: 6px;
-    padding: 2px 7px;
-    font-family: -apple-system, system-ui, sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    color: #dc2626;
-    cursor: pointer;
-    margin: 0 3px;
-    vertical-align: middle;
-    text-decoration: none;
-    box-shadow: 0 1px 4px rgba(220,38,38,0.15);
-    transition: all 0.15s ease;
-    position: relative;
-    z-index: 9999;
-    white-space: nowrap;
-  }
-  
-  .seneca-badge:hover {
-    background: #fee2e2;
-    box-shadow: 0 2px 8px rgba(220,38,38,0.25);
-  }
-  
-  .seneca-badge.seneca-warn {
-    border-color: #d97706;
-    color: #d97706;
-    box-shadow: 0 1px 4px rgba(217,119,6,0.15);
-  }
-  
-  .seneca-badge.seneca-warn:hover {
-    background: #fef3c7;
-  }
-  
-  .seneca-badge.seneca-ok {
-    border-color: #15803d;
-    color: #15803d;
-    box-shadow: 0 1px 4px rgba(21,128,61,0.15);
-  }
-  
-  .seneca-badge.seneca-ok:hover {
-    background: #dcfce7;
-  }
-  
-  .seneca-panel {
-    position: fixed;
-    top: 50%;
-    right: 24px;
-    transform: translateY(-50%);
-    width: 320px;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 14px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 4px 16px rgba(0,0,0,0.08);
-    z-index: 2147483647;
-    font-family: -apple-system, system-ui, sans-serif;
-    overflow: hidden;
-    animation: seneca-slide-in 0.25s ease;
-  }
-  
-  @keyframes seneca-slide-in {
-    from { opacity: 0; transform: translateY(-50%) translateX(20px); }
-    to   { opacity: 1; transform: translateY(-50%) translateX(0); }
-  }
-  
-  .seneca-panel-header {
-    padding: 14px 16px;
-    background: #f8fafc;
-    border-bottom: 1px solid #e2e8f0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  
-  .seneca-panel-logo {
-    font-size: 12px;
-    font-weight: 700;
-    color: #1d4ed8;
-    letter-spacing: 0.05em;
-  }
-  
-  .seneca-panel-close {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    color: #94a3b8;
-    padding: 0;
-    line-height: 1;
-  }
-  
-  .seneca-panel-body {
-    padding: 16px;
-  }
-  
-  .seneca-panel-name {
-    font-size: 17px;
-    font-weight: 600;
-    color: #0f172a;
-    line-height: 1.2;
-    margin-bottom: 2px;
-  }
-  
-  .seneca-panel-role {
-    font-size: 11px;
-    color: #64748b;
-    margin-bottom: 14px;
-  }
-  
-  .seneca-panel-score-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 14px;
-  }
-  
-  .seneca-panel-score {
-    font-size: 48px;
-    font-weight: 700;
-    line-height: 1;
-    letter-spacing: -0.03em;
-  }
-  
-  .seneca-panel-score-label {
-    font-size: 10px;
-    color: #94a3b8;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-top: 4px;
-  }
-  
-  .seneca-panel-risk {
-    font-size: 11px;
-    font-weight: 700;
-    padding: 5px 12px;
-    border-radius: 999px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-  
-  .seneca-panel-flag {
-    background: #fee2e2;
-    border: 1px solid #dc2626;
-    border-radius: 8px;
-    padding: 10px 12px;
-    margin-bottom: 14px;
-  }
-  
-  .seneca-panel-flag-label {
-    font-size: 9px;
-    font-weight: 700;
-    color: #dc2626;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 4px;
-  }
-  
-  .seneca-panel-flag-title {
-    font-size: 13px;
-    font-weight: 600;
-    color: #0f172a;
-    margin-bottom: 4px;
-    line-height: 1.3;
-  }
-  
-  .seneca-panel-flag-body {
-    font-size: 11px;
-    color: #475569;
-    line-height: 1.5;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  
-  .seneca-panel-dims {
-    margin-bottom: 14px;
-  }
-  
-  .seneca-panel-dim-row {
-    display: grid;
-    grid-template-columns: 90px 1fr 24px;
-    gap: 6px;
-    align-items: center;
-    margin-bottom: 6px;
-  }
-  
-  .seneca-panel-dim-label {
-    font-size: 10px;
-    color: #94a3b8;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  
-  .seneca-panel-dim-bar-bg {
-    height: 3px;
-    background: #f1f5f9;
-    border-radius: 2px;
-    overflow: hidden;
-  }
-  
-  .seneca-panel-dim-bar {
-    height: 100%;
-    border-radius: 2px;
-  }
-  
-  .seneca-panel-dim-score {
-    font-size: 10px;
-    font-weight: 600;
-    text-align: right;
-  }
-  
-  .seneca-panel-footer {
-    padding: 12px 16px;
-    background: #f8fafc;
-    border-top: 1px solid #e2e8f0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  
-  .seneca-panel-link {
-    font-size: 12px;
-    font-weight: 600;
-    color: #1d4ed8;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-  
-  .seneca-panel-link:hover {
-    text-decoration: underline;
-  }
-  
-  .seneca-panel-source {
-    font-size: 10px;
-    color: #94a3b8;
-  }
+  display: inline-flex;
+  align-items: stretch;
+  height: 20px;
+  padding: 0;
+  background: #ffffff;
+  color: #0f172a;
+  border: 1px solid #0f172a;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  margin: 0 4px;
+  vertical-align: -4px;
+  text-decoration: none !important;
+  white-space: nowrap;
+  user-select: none;
+  overflow: hidden;
+  position: relative;
+  z-index: 9999;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+
+  /* one-shot entry animation: subtle pulse to draw the eye on first render */
+  animation: seneca-badge-enter 600ms cubic-bezier(.2,.7,.2,1) both;
+}
+@keyframes seneca-badge-enter {
+  0%   { transform: translateY(2px) scale(0.92); opacity: 0; box-shadow: 0 0 0 0 rgba(29,78,216,0.55); }
+  60%  { transform: translateY(0) scale(1);     opacity: 1; box-shadow: 0 0 0 6px rgba(29,78,216,0.20); }
+  100% { transform: translateY(0) scale(1);     opacity: 1; box-shadow: 0 0 0 0 rgba(29,78,216,0); }
+}
+.seneca-badge:hover {
+  transform: translateY(-1px);
+  box-shadow: 2px 2px 0 0 #0f172a;
+}
+.seneca-badge:active {
+  transform: translateY(0);
+  box-shadow: 1px 1px 0 0 #0f172a;
+}
+
+/* Brand chip — navy left segment with scale glyph */
+.seneca-badge-brand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+  background: #1d4ed8;
+  color: #ffffff;
+  font-size: 11px;
+  letter-spacing: 0;
+}
+
+/* Score chip — white center, risk-tinted text */
+.seneca-badge-score {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 6px 0 6px;
+  color: #dc2626;            /* default: alto */
+  font-variant-numeric: tabular-nums;
+  font-size: 12px;
+  border-left: 1px solid #0f172a;
+}
+.seneca-badge.seneca-warn .seneca-badge-score { color: #d97706; }
+.seneca-badge.seneca-ok   .seneca-badge-score { color: #16a34a; }
+
+/* Alerts chip — tiny right segment, optional (only if flagCount > 0) */
+.seneca-badge-alerts {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 5px 0 4px;
+  background: #fef2f2;
+  color: #dc2626;
+  border-left: 1px solid #0f172a;
+  font-size: 10px;
+  letter-spacing: 0.02em;
+}
+.seneca-badge.seneca-warn .seneca-badge-alerts { background: #fffbeb; color: #d97706; }
+.seneca-badge.seneca-ok   .seneca-badge-alerts { background: #f0fdf4; color: #16a34a; }
+
+/* Disable entry animation if the user prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .seneca-badge { animation: none; }
+}
+
+/* ============================================================
+   2. SIDE PANEL  (320px, fixed right, vertically centered)
+   ============================================================ */
+.seneca-panel {
+  position: fixed;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  width: 320px;
+  background: #ffffff;
+  color: #0f172a;
+  border: 1px solid #0f172a;
+  border-radius: 4px;
+  box-shadow:
+    0 0 0 1px rgba(15,23,42,0.04),
+    8px 8px 0 0 rgba(15,23,42,0.06),
+    0 24px 60px rgba(15,23,42,0.18);
+  z-index: 2147483647;
+  overflow: hidden;
+  animation: seneca-slide-in 220ms cubic-bezier(.2,.7,.2,1);
+}
+@keyframes seneca-slide-in {
+  from { opacity: 0; transform: translateY(-50%) translateX(16px); }
+  to   { opacity: 1; transform: translateY(-50%) translateX(0); }
+}
+
+/* ----- Header band (navy, brand) ----- */
+.seneca-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 14px;
+  background: #1d4ed8;
+  color: #ffffff;
+}
+.seneca-panel-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.seneca-panel-logo-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  background: #ffffff;
+  color: #1d4ed8;
+  font-size: 11px;
+  border-radius: 2px;
+  font-weight: 800;
+}
+.seneca-panel-close {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.5);
+  color: #ffffff;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+.seneca-panel-close:hover { background: #dc2626; border-color: #dc2626; }
+
+/* ----- Body ----- */
+.seneca-panel-body { padding: 14px 16px 4px; }
+
+.seneca-panel-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #64748b;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed #e2e8f0;
+}
+.seneca-panel-meta strong { color: #0f172a; font-weight: 700; }
+
+.seneca-panel-name {
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin: 0 0 4px;
+  color: #0f172a;
+}
+.seneca-panel-role {
+  font-size: 10px;
+  color: #64748b;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+/* ----- Score + risk card ----- */
+.seneca-panel-score-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: stretch;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 3px;
+}
+.seneca-panel-score-block { display: flex; flex-direction: column; justify-content: center; }
+.seneca-panel-score {
+  font-size: 44px;
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  color: #dc2626;
+  font-variant-numeric: tabular-nums;
+}
+.seneca-panel-score-suffix {
+  display: inline;
+  font-size: 14px;
+  color: #94a3b8;
+  font-weight: 600;
+  letter-spacing: 0;
+  margin-left: 2px;
+}
+.seneca-panel-score-label {
+  font-size: 9px;
+  color: #64748b;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-top: 6px;
+}
+.seneca-panel-risk {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 10px;
+  border: 1.5px solid #dc2626;
+  color: #dc2626;
+  background: #ffffff;
+  border-radius: 2px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 1.3;
+}
+.seneca-panel-risk-prefix {
+  font-size: 8px;
+  letter-spacing: 0.18em;
+  opacity: 0.7;
+  font-weight: 600;
+}
+.seneca-panel-risk-level { font-size: 13px; letter-spacing: 0.06em; }
+
+/* ----- Top flag ----- */
+.seneca-panel-flag {
+  position: relative;
+  padding: 11px 12px 12px 14px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-left: 3px solid #dc2626;
+  border-radius: 3px;
+  margin-bottom: 14px;
+}
+.seneca-panel-flag-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 9px;
+  font-weight: 700;
+  color: #dc2626;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.seneca-panel-flag-label::before { content: "▲"; font-size: 10px; }
+.seneca-panel-flag-title {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 4px;
+  color: #0f172a;
+}
+.seneca-panel-flag-body {
+  font-size: 11px;
+  line-height: 1.5;
+  color: #475569;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ----- Dimension bars ----- */
+.seneca-panel-section-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #64748b;
+  margin-bottom: 10px;
+}
+.seneca-panel-section-label::before,
+.seneca-panel-section-label::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e2e8f0;
+}
+.seneca-panel-dims { margin-bottom: 14px; }
+.seneca-panel-dim-row {
+  display: grid;
+  grid-template-columns: 96px 1fr 26px;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 7px;
+  font-size: 10px;
+}
+.seneca-panel-dim-label {
+  color: #475569;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.seneca-panel-dim-bar-bg {
+  height: 6px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 1px;
+  overflow: hidden;
+}
+.seneca-panel-dim-bar {
+  height: 100%;
+  background: #dc2626;
+}
+.seneca-panel-dim-score {
+  font-size: 11px;
+  font-weight: 700;
+  text-align: right;
+  color: #0f172a;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ----- Footer ----- */
+.seneca-panel-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 16px;
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+}
+.seneca-panel-link {
+  font-size: 11px;
+  font-weight: 700;
+  color: #1d4ed8;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  text-decoration: none;
+  border-bottom: 1px dashed transparent;
+  transition: border-color 120ms ease;
+}
+.seneca-panel-link:hover { border-bottom-color: #1d4ed8; }
+.seneca-panel-source {
+  font-size: 9px;
+  color: #94a3b8;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}

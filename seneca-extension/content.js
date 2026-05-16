@@ -72,16 +72,22 @@ function scoreColor(score) {
 }
 
 function riskLabel(r) {
-  if (r === 'BAJO')     return { word: 'BAJO',     css: 'ok'   }
-  if (r === 'MODERADO') return { word: 'MODERADO', css: 'warn' }
-  if (r === 'ELEVADO')  return { word: 'ELEVADO',  css: 'warn' }
-  return                       { word: 'ALTO',     css: 'alto' }
+  if (r === 'BAJO')     return { word: 'BAJO',    css: 'ok'   }
+  if (r === 'MODERADO') return { word: 'MODERADO',css: 'warn' }
+  if (r === 'ELEVADO')  return { word: 'ELEVADO', css: 'warn' }
+  return                       { word: 'ALTO',    css: 'alto' }
 }
 
 function riskColors(css) {
   if (css === 'ok')   return { color: '#16a34a', border: '#16a34a', bg: '#f0fdf4', soft: '#bbf7d0' }
   if (css === 'warn') return { color: '#d97706', border: '#d97706', bg: '#fffbeb', soft: '#fde68a' }
   return                     { color: '#dc2626', border: '#dc2626', bg: '#fef2f2', soft: '#fecaca' }
+}
+
+function highlightColor(score) {
+  if (score >= 70) return { bg: 'rgba(22,163,74,0.10)',  border: '#16a34a' }
+  if (score >= 45) return { bg: 'rgba(217,119,6,0.10)',  border: '#d97706' }
+  return                  { bg: 'rgba(220,38,38,0.10)',  border: '#dc2626' }
 }
 
 // ── API ──────────────────────────────────────────────────────
@@ -213,7 +219,7 @@ function showPanel(politician) {
   }, { once: true })
 }
 
-// ── Badge ────────────────────────────────────────────────────
+// ── Badge + highlight ────────────────────────────────────────
 
 function injectBadge(textNode, name, politician) {
   const parent = textNode.parentNode
@@ -228,6 +234,34 @@ function injectBadge(textNode, name, politician) {
   const before = document.createTextNode(text.slice(0, idx))
   const after  = document.createTextNode(text.slice(idx + name.length))
 
+  // Highlighted name span
+  const hc = highlightColor(politician.score)
+  const nameSpan = document.createElement('span')
+  nameSpan.style.cssText = [
+    `background: ${hc.bg} !important`,
+    `border-bottom: 2px solid ${hc.border} !important`,
+    `border-radius: 2px !important`,
+    `padding: 0 2px !important`,
+    `cursor: pointer !important`,
+    `display: inline !important`,
+    `transition: background 150ms ease !important`,
+  ].join(';')
+  nameSpan.textContent = name
+
+  nameSpan.addEventListener('mouseenter', () => {
+    nameSpan.style.setProperty('background',
+      hc.bg.replace('0.10', '0.22'), 'important')
+  })
+  nameSpan.addEventListener('mouseleave', () => {
+    nameSpan.style.setProperty('background', hc.bg, 'important')
+  })
+  nameSpan.addEventListener('click', (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    showPanel(politician)
+  })
+
+  // Badge
   const badge = document.createElement('span')
   badge.className = `seneca-badge ${scoreClass(politician.score)}`
   badge.title = `Índice Séneca: ${politician.score}/100 · ${politician.flagCount} alertas documentadas`
@@ -241,7 +275,6 @@ function injectBadge(textNode, name, politician) {
     <span class="seneca-badge-score">${politician.score}</span>
     ${alerts}
   `
-
   badge.addEventListener('click', (e) => {
     e.preventDefault()
     e.stopPropagation()
@@ -250,7 +283,7 @@ function injectBadge(textNode, name, politician) {
 
   const fragment = document.createDocumentFragment()
   fragment.appendChild(before)
-  fragment.appendChild(document.createTextNode(name))
+  fragment.appendChild(nameSpan)
   fragment.appendChild(badge)
   fragment.appendChild(after)
 
@@ -309,19 +342,42 @@ async function scanAndInject(root = document.body) {
 
 // ── Init ─────────────────────────────────────────────────────
 
-scanAndInject()
+console.log('SENECA loaded')
 
-const observer = new MutationObserver((mutations) => {
-  for (const mutation of mutations) {
-    for (const node of mutation.addedNodes) {
-      if (node.nodeType === Node.ELEMENT_NODE) {
-        scanAndInject(node)
+// Debounce helper
+function debounce(fn, ms) {
+  let timer
+  return (...args) => {
+    clearTimeout(timer)
+    timer = setTimeout(() => fn(...args), ms)
+  }
+}
+
+// Debounced scan so we don't fire on every tiny DOM change
+const debouncedScan = debounce((node) => {
+  try { scanAndInject(node) } catch(e) {}
+}, 500)
+
+try {
+  // Delay initial scan so page can finish loading first
+  setTimeout(() => {
+    try { scanAndInject() } catch(e) { console.warn('SENECA scan error:', e) }
+  }, 2000)
+
+  const observer = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      for (const node of mutation.addedNodes) {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          debouncedScan(node)
+        }
       }
     }
-  }
-})
+  })
 
-observer.observe(document.body, {
-  childList: true,
-  subtree: true,
-})
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+  })
+} catch(e) {
+  console.warn('SENECA init error:', e)
+}

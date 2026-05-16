@@ -223,8 +223,6 @@ function showPanel(politician) {
   }, { once: true })
 }
 
-// ── Verify panel ─────────────────────────────────────────────
-
 function showVerifyPanel(result, claim) {
   closeVerifyPanel()
   closePanel()
@@ -233,7 +231,22 @@ function showVerifyPanel(result, claim) {
 
   const panel = document.createElement('div')
   panel.className = 'seneca-panel'
-  panel.style.cssText = 'width: 360px !important;'
+  panel.style.cssText = `
+    width: 320px !important;
+    max-height: 80vh !important;
+    overflow-y: auto !important;
+  `
+
+  const contradictionsHtml = (result.contradictions ?? []).slice(0, 3).map((c, i) => `
+    <div style="padding:8px 10px;background:#fef2f2;border:1px solid #fecaca;border-left:3px solid #dc2626;border-radius:3px;margin-bottom:8px;">
+      <div style="font-size:9px;font-weight:700;color:#dc2626;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;font-family:ui-monospace,monospace;">▲ Contradicción ${i + 1}</div>
+      <div style="font-size:11px;color:#0f172a;line-height:1.5;margin-bottom:4px;font-family:-apple-system,sans-serif;">${c.reality}</div>
+      ${c.source ? `<div style="font-size:9px;color:#94a3b8;font-family:ui-monospace,monospace;word-break:break-all;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${c.source}</div>` : ''}
+    </div>
+  `).join('')
+
+  const claimShort = claim.length > 80 ? claim.slice(0, 80) + '…' : claim
+
   panel.innerHTML = `
     <div class="seneca-panel-header">
       <span class="seneca-panel-logo">
@@ -244,80 +257,23 @@ function showVerifyPanel(result, claim) {
     </div>
     <div class="seneca-panel-body">
 
-      <div style="
-        padding: 10px 12px;
-        background: ${vs.bg};
-        border: 1px solid ${vs.border};
-        border-left: 3px solid ${vs.color};
-        border-radius: 4px;
-        margin-bottom: 14px;
-      ">
-        <div style="
-          font-size: 10px;
-          font-weight: 700;
-          color: ${vs.color};
-          letter-spacing: 0.14em;
-          text-transform: uppercase;
-          margin-bottom: 4px;
-          font-family: ui-monospace, monospace;
-        ">${vs.icon} VEREDICTO · ${result.confidence ?? 'MEDIA'}</div>
-        <div style="
-          font-size: 13px;
-          font-weight: 700;
-          color: #0f172a;
-          line-height: 1.3;
-        ">${result.verdict_es ?? result.verdict ?? 'Sin veredicto'}</div>
+      <div style="padding:8px 10px;background:${vs.bg};border:1px solid ${vs.border};border-left:3px solid ${vs.color};border-radius:4px;margin-bottom:10px;">
+        <div style="font-size:9px;font-weight:700;color:${vs.color};letter-spacing:0.14em;text-transform:uppercase;margin-bottom:3px;font-family:ui-monospace,monospace;">${vs.icon} VEREDICTO · ${result.confidence ?? 'MEDIA'}</div>
+        <div style="font-size:12px;font-weight:700;color:#0f172a;line-height:1.3;">${result.verdict_es ?? result.verdict ?? 'Sin veredicto'}</div>
       </div>
 
-      <div style="
-        font-size: 11px;
-        color: #64748b;
-        font-style: italic;
-        padding: 8px 10px;
-        background: #f8fafc;
-        border-radius: 3px;
-        margin-bottom: 14px;
-        border-left: 2px solid #e2e8f0;
-        line-height: 1.5;
-        font-family: -apple-system, sans-serif;
-      ">"${claim.length > 120 ? claim.slice(0, 120) + '…' : claim}"</div>
+      <div style="font-size:10px;color:#64748b;font-style:italic;padding:6px 8px;background:#f8fafc;border-radius:3px;margin-bottom:10px;border-left:2px solid #e2e8f0;line-height:1.5;font-family:-apple-system,sans-serif;">"${claimShort}"</div>
 
-      <div style="font-size: 12px; color: #475569; line-height: 1.55; margin-bottom: 14px; font-family: -apple-system, sans-serif;">
-      ${result.summary ?? 'No se encontró información suficiente para verificar esta declaración.'}
-      </div>
+      <div style="font-size:11px;color:#475569;line-height:1.55;margin-bottom:10px;font-family:-apple-system,sans-serif;">${result.summary ?? 'No se encontró información suficiente.'}</div>
 
-      ${(result.contradictions ?? []).length > 0 ? `
-        <div class="seneca-panel-section-label">Contradicciones documentadas</div>
-        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px;">
-          ${result.contradictions.map((c, i) => `
-            <div style="
-              padding: 10px 12px;
-              background: #fef2f2;
-              border: 1px solid #fecaca;
-              border-left: 3px solid #dc2626;
-              border-radius: 3px;
-            ">
-              <div style="font-size: 10px; font-weight: 700; color: #dc2626; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px; font-family: ui-monospace, monospace;">
-                ▲ Contradicción ${i + 1}
-              </div>
-              <div style="font-size: 12px; color: #0f172a; line-height: 1.5; margin-bottom: 6px; font-family: -apple-system, sans-serif;">
-                ${c.reality}
-              </div>
-              ${c.source ? `
-                <div style="font-size: 10px; color: #94a3b8; font-family: ui-monospace, monospace; word-break: break-all;">
-                  ${c.source}
-                </div>
-              ` : ''}
-            </div>
-          `).join('')}
-        </div>
+      ${contradictionsHtml.length > 0 ? `
+        <div class="seneca-panel-section-label">Contradicciones</div>
+        ${contradictionsHtml}
       ` : ''}
 
     </div>
     <div class="seneca-panel-footer">
-      <span class="seneca-panel-link" data-url="${result.profileUrl}">
-        Ver expediente completo →
-      </span>
+      <span class="seneca-panel-link" data-url="${result.profileUrl ?? 'https://seneca-report.vercel.app'}">Ver expediente completo →</span>
       <span class="seneca-panel-source">seneca.report</span>
     </div>
   `
@@ -331,8 +287,6 @@ function showVerifyPanel(result, claim) {
   document.getElementById('seneca-verify-close').addEventListener('click', closeVerifyPanel)
 }
 
-// ── Verify popup (selection tooltip) ─────────────────────────
-
 function showVerifyPopup(x, y, selectedText) {
   closeVerifyPopup()
 
@@ -340,35 +294,63 @@ function showVerifyPopup(x, y, selectedText) {
   popup.className = 'seneca-verify-popup'
   popup.style.cssText = `
     position: fixed !important;
-    left: ${Math.min(x, window.innerWidth - 220)}px !important;
-    top: ${y - 44}px !important;
+    left: ${Math.min(x, window.innerWidth - 240)}px !important;
+    top: ${y - 48}px !important;
     z-index: 2147483647 !important;
     display: inline-flex !important;
     align-items: center !important;
     gap: 6px !important;
-    background: #0f172a !important;
-    color: #ffffff !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border: 1.5px solid #0f172a !important;
     border-radius: 6px !important;
-    padding: 8px 12px !important;
+    padding: 7px 12px !important;
     font-family: ui-monospace, monospace !important;
     font-size: 11px !important;
     font-weight: 700 !important;
     letter-spacing: 0.06em !important;
     cursor: pointer !important;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.3) !important;
+    box-shadow: 2px 2px 0 0 #0f172a !important;
     white-space: nowrap !important;
-    animation: seneca-badge-enter 200ms ease both !important;
     user-select: none !important;
+    transition: all 120ms ease !important;
   `
   popup.innerHTML = `<span style="color:#1d4ed8;font-size:13px">⚖</span> Verificar con Séneca`
+
+  popup.addEventListener('mouseenter', () => {
+    popup.style.setProperty('background', '#f8fafc', 'important')
+  })
+  popup.addEventListener('mouseleave', () => {
+    popup.style.setProperty('background', '#ffffff', 'important')
+  })
 
   popup.addEventListener('click', async (e) => {
     e.preventDefault()
     e.stopPropagation()
 
-    // Show loading state
-    popup.innerHTML = `<span style="opacity:0.7">Verificando…</span>`
-    popup.style.background = '#1d4ed8 !important'
+    // Loading state — keep visible, change to blue border + spinner text
+    popup.style.setProperty('border-color', '#1d4ed8', 'important')
+    popup.style.setProperty('box-shadow', '2px 2px 0 0 #1d4ed8', 'important')
+    popup.style.setProperty('cursor', 'wait', 'important')
+    popup.innerHTML = `
+      <span style="
+        display:inline-block;
+        width:10px;height:10px;
+        border:2px solid #e2e8f0;
+        border-top-color:#1d4ed8;
+        border-radius:50%;
+        animation:seneca-spin 600ms linear infinite;
+      "></span>
+      <span style="color:#1d4ed8">Verificando…</span>
+    `
+
+    // Add spinner keyframes if not already present
+    if (!document.getElementById('seneca-spin-style')) {
+      const style = document.createElement('style')
+      style.id = 'seneca-spin-style'
+      style.textContent = '@keyframes seneca-spin { to { transform: rotate(360deg); } }'
+      document.head.appendChild(style)
+    }
 
     const result = await verifyClaim(
       selectedText,
@@ -376,26 +358,31 @@ function showVerifyPopup(x, y, selectedText) {
       window.location.href
     )
 
+    // Now close popup and show panel
     closeVerifyPopup()
 
     if (result) {
       showVerifyPanel(result, selectedText)
+      closeVerifyPopup()
     } else {
-      // Show error briefly
+      closeVerifyPopup()
       const err = document.createElement('div')
       err.style.cssText = `
         position: fixed !important;
-        left: ${x}px !important;
-        top: ${y - 44}px !important;
+        left: ${Math.min(x, window.innerWidth - 240)}px !important;
+        top: ${y - 48}px !important;
         z-index: 2147483647 !important;
-        background: #dc2626 !important;
-        color: white !important;
-        padding: 8px 12px !important;
+        background: #fef2f2 !important;
+        color: #dc2626 !important;
+        border: 1.5px solid #dc2626 !important;
+        padding: 7px 12px !important;
         border-radius: 6px !important;
         font-size: 11px !important;
+        font-weight: 700 !important;
         font-family: ui-monospace, monospace !important;
+        box-shadow: 2px 2px 0 0 #dc2626 !important;
       `
-      err.textContent = 'Error al verificar. Intenta de nuevo.'
+      err.textContent = '✕ Error al verificar. Intenta de nuevo.'
       document.body.appendChild(err)
       setTimeout(() => err.remove(), 3000)
     }
@@ -404,8 +391,8 @@ function showVerifyPopup(x, y, selectedText) {
   document.body.appendChild(popup)
   verifyPopup = popup
 
-  // Auto-hide after 5 seconds
-  setTimeout(() => closeVerifyPopup(), 5000)
+  // Auto-hide after 8 seconds if not clicked
+  setTimeout(() => closeVerifyPopup(), 8000)
 }
 
 // ── Text selection listener ───────────────────────────────────

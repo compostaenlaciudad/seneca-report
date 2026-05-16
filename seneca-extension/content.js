@@ -269,8 +269,9 @@ function injectBadge(textNode, name, politician) {
   nameSpan.addEventListener('click', (e) => {
     e.preventDefault()
     e.stopPropagation()
+    e.stopImmediatePropagation()
     showPanel(politician)
-  })
+  }, true)
 
   // Badge
   const badge = document.createElement('span')
@@ -289,8 +290,9 @@ function injectBadge(textNode, name, politician) {
   badge.addEventListener('click', (e) => {
     e.preventDefault()
     e.stopPropagation()
+    e.stopImmediatePropagation()
     showPanel(politician)
-  })
+  }, true) // true = capture phase, fires before Facebook's handler
 
   const fragment = document.createDocumentFragment()
   fragment.appendChild(before)
@@ -372,9 +374,22 @@ const debouncedScan = debounce((node) => {
 }, 500)
 
 try {
+  // Initial scan after page loads
   setTimeout(() => {
     try { scanAndInject() } catch(e) { console.warn('SENECA scan error:', e) }
   }, 2000)
+
+  // Second scan for late-loading content
+  setTimeout(() => {
+    try { scanAndInject() } catch(e) {}
+  }, 5000)
+
+  // Facebook-specific: poll every 3s for new feed content
+  if (window.location.hostname.includes('facebook.com')) {
+    setInterval(() => {
+      try { scanAndInject() } catch(e) {}
+    }, 3000)
+  }
 
   const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {

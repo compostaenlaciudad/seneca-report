@@ -92,20 +92,69 @@ export function LandingClient({ politicians }: { politicians: Politician[] }) {
               <Pill>Open source · CC BY-SA</Pill>
             </div>
 
-            <h1
-              className="serif"
-              style={{
-                fontSize: 72,
-                lineHeight: 0.96,
-                fontWeight: 500,
-                color: 'var(--text)',
-                letterSpacing: '-0.025em',
-                margin: '0 0 20px',
-              }}
-            >
-              El expediente que tus políticos<br />
-              <span style={{ color: 'var(--accent)' }}>no quieren que leas.</span>
-            </h1>
+{/* Stats — press credential style */}
+<div style={{
+  display: 'flex',
+  alignItems: 'center',
+  gap: 8,
+  marginBottom: 28,
+  flexWrap: 'wrap',
+}}>
+  {[
+  { label: 'POLÍTICOS', value: String(politicians.length), color: '#0f172a', dot: '#1d4ed8' },
+  { label: 'ALERTAS', value: String(politicians.reduce((s, p) => s + p.flags.length, 0)), color: '#dc2626', dot: '#dc2626' },
+  { label: 'RIESGO ALTO', value: String(politicians.filter(p => p.risk === 'ALTO').length), color: '#dc2626', dot: '#dc2626' },
+  { label: 'IRREGULARIDADES', value: '$4.8B', color: '#d97706', dot: '#d97706' },
+].map(({ label, value, color, dot }) => (
+  <div key={label} style={{
+    display: 'inline-flex',
+    alignItems: 'stretch',
+    height: 24,
+    border: '1px solid #e2e8f0',
+    borderRadius: 4,
+    overflow: 'hidden',
+    fontFamily: 'ui-monospace, monospace',
+    fontSize: 11,
+    fontWeight: 700,
+    letterSpacing: '0.04em',
+    background: '#fff',
+  }}>
+    <div style={{
+      display: 'inline-flex',
+      alignItems: 'center',
+      padding: '0 8px',
+      gap: 5,
+      borderRight: '1px solid #e2e8f0',
+    }}>
+      <span style={{ width: 6, height: 6, borderRadius: '50%', background: dot, flexShrink: 0 }} />
+      <span style={{ color }}>{value}</span>
+    </div>
+    <div style={{
+      display: 'inline-flex',
+      alignItems: 'center',
+      padding: '0 8px',
+      background: '#f8fafc',
+      color: '#94a3b8',
+      fontSize: 9,
+      letterSpacing: '0.1em',
+      fontWeight: 600,
+    }}>{label}</div>
+  </div>
+))}
+</div>
+
+<h1 className="serif" style={{
+  fontSize: 72,
+  lineHeight: 0.96,
+  fontWeight: 500,
+  color: 'var(--text)',
+  letterSpacing: '-0.025em',
+  margin: '0 0 20px',
+}}>
+  El expediente que tus<br />
+  políticos{' '}
+  <span style={{ color: 'var(--accent)' }}>no quieren que&nbsp;leas.</span>
+</h1>
 
             <p style={{
               fontSize: 17,

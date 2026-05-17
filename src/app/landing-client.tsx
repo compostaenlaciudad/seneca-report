@@ -532,7 +532,7 @@ export function LandingClient({ politicians }: { politicians: Politician[] }) {
               padding: '32px 28px',
             }} className="featured-left">
               <div style={{ marginBottom: 18 }}>
-                <PortraitSlot initials={featured.photo} size={96} />
+                <PortraitSlot initials={featured.photo} photoUrl={featured.photoUrl} size={96} />
               </div>
               <h3 className="serif" style={{
                 fontSize: 24,

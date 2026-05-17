@@ -84,7 +84,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ slug: 
           gap: 28,
           alignItems: 'center',
         }}>
-          <PortraitSlot initials={p.photo} size={120} radius={14} />
+          <PortraitSlot initials={p.photo} photoUrl={p.photoUrl} size={120} radius={14} />
 
           <div>
             <Kicker>{p.party} · {p.state} · Senado</Kicker>

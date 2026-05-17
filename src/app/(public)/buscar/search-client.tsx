@@ -439,7 +439,7 @@ function ResultRow({ p }: { p: Politician }) {
         color: 'inherit',
       }}
     >
-      <PortraitSlot initials={p.photo} size={52} radius={8} />
+      <PortraitSlot initials={p.photo} photoUrl={p.photoUrl} size={52} radius={8} />
 
       <div>
         <div

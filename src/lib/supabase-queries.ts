@@ -35,6 +35,7 @@ export async function getAllPoliticians(): Promise<Politician[]> {
       risk_level,
       summary_es,
       last_updated,
+      photo_url,
       score_dimensions (
         name,
         score,
@@ -83,6 +84,7 @@ export async function getPoliticianBySlug(slug: string): Promise<Politician | un
       risk_level,
       summary_es,
       last_updated,
+      photo_url,
       score_dimensions (
         name,
         score,
@@ -156,6 +158,7 @@ function mapCandidate(c: any): Politician {
     state: c.state,
     born: '',
     photo: initials,
+    photoUrl: c.photo_url ?? null,
     score: c.seneca_score ?? 0,
     risk: mapRisk(c.risk_level),
     bio: c.summary_es ?? '',

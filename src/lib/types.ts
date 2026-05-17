@@ -48,7 +48,8 @@ export interface Politician {
   party: string;
   state: string;
   born: string;
-  photo: string; // initials placeholder until real photos
+  photo: string; // initials fallback
+photoUrl?: string | null; // real photo URL
   score: number;
   risk: Risk;
   dimensions: Dimension[];

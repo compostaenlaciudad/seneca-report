@@ -61,7 +61,7 @@ function PoliticianSelector({
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <PortraitSlot initials={selected.photo} size={32} radius={6} />
+          <PortraitSlot initials={selected.photo} photoUrl={selected.photoUrl} size={32} radius={6} />
           <div style={{ textAlign: 'left' }}>
             <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--text)' }}>
               {selected.name.split(' ').slice(0, 2).join(' ')}
@@ -106,7 +106,7 @@ function PoliticianSelector({
               onMouseEnter={e => { if (selected.slug !== p.slug) e.currentTarget.style.background = 'var(--surface)'; }}
               onMouseLeave={e => { if (selected.slug !== p.slug) e.currentTarget.style.background = 'transparent'; }}
             >
-              <PortraitSlot initials={p.photo} size={28} radius={5} />
+              <PortraitSlot initials={p.photo} photoUrl={p.photoUrl} size={28} radius={5} />
               <div style={{ textAlign: 'left', flex: 1 }}>
                 <div style={{ fontSize: 12.5, fontWeight: 500, color: 'var(--text)' }}>{p.name}</div>
                 <Mono size={9} color="var(--muted)">{p.party} · {p.state}</Mono>
@@ -292,7 +292,7 @@ function CompareColumn({ p, other, side }: { p: Politician; other: Politician; s
 
       <div style={{ padding: 24, borderBottom: '1px solid var(--border)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 14 }}>
-          <PortraitSlot initials={p.photo} size={56} radius={10} />
+          <PortraitSlot initials={p.photo} photoUrl={p.photoUrl} size={56} radius={10} />
           <div style={{ flex: 1 }}>
             <Mono size={10} color="var(--muted)">{p.party} · {p.state}</Mono>
             <div

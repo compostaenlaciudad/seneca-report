@@ -38,12 +38,14 @@ export function ProfileTabs({ p }: { p: Politician }) {
               onClick={() => setActive(tb)}
               style={{
                 padding: '12px 14px',
+                borderTop: 'none',
+                borderLeft: 'none',
+                borderRight: 'none',
                 borderBottom: `2px solid ${isActive ? 'var(--accent)' : 'transparent'}`,
                 fontSize: 13,
                 fontWeight: 500,
                 color: isActive ? 'var(--accent)' : 'var(--text-2)',
                 background: 'none',
-                border: 'none',
                 cursor: 'pointer',
                 whiteSpace: 'nowrap',
               }}
@@ -152,13 +154,13 @@ export function ProfileTabs({ p }: { p: Politician }) {
               const color = scoreColor(d.score)
               return (
                 <div key={d.key} style={{ border: '1px solid var(--border)', borderRadius: 12, padding: 24, background: 'var(--bg)' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-                    <div>
-                      <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--text)', marginBottom: 4 }}>{d.label}</div>
-                    </div>
-                    <div style={{ fontSize: 36, fontWeight: 700, color, letterSpacing: '-0.03em', lineHeight: 1 }}>
-                      {d.score}
-                      <span style={{ fontSize: 14, color: 'var(--muted)', fontWeight: 400 }}>/100</span>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+                    <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--text)' }}>{d.label}</div>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 2 }}>
+                    <Mono size={36} color={color} style={{ fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 1 }}>
+                        {d.score}
+                    </Mono>
+                    <Mono size={13} color="var(--muted)" style={{ fontWeight: 400 }}>/100</Mono>
                     </div>
                   </div>
                   <div style={{ height: 8, background: 'var(--surface-2)', borderRadius: 4, overflow: 'hidden', marginBottom: 14 }}>
@@ -180,7 +182,6 @@ export function ProfileTabs({ p }: { p: Politician }) {
               <PatrimonySection p={p} />
             ) : (
               <EmptyTab
-                icon="📋"
                 title="Sin datos patrimoniales"
                 description="No se han registrado declaraciones patrimoniales verificadas para este político. Los datos se actualizan cuando la información está disponible en Declaranet."
               />
@@ -210,7 +211,6 @@ export function ProfileTabs({ p }: { p: Politician }) {
               </div>
             ) : (
               <EmptyTab
-                icon="🗓"
                 title="Sin trayectoria registrada"
                 description="La trayectoria política de este funcionario está siendo documentada. Los datos se actualizan periódicamente."
               />
@@ -221,7 +221,6 @@ export function ProfileTabs({ p }: { p: Politician }) {
         {/* ── VOTOS ── */}
         {active === 'Votos' && (
           <EmptyTab
-            icon="🗳"
             title="Registro de votaciones"
             description="El historial de votaciones en pleno está siendo integrado desde las actas oficiales de la Cámara de Diputados y el Senado de la República. Próximamente disponible."
           />
@@ -279,7 +278,7 @@ export function ProfileTabs({ p }: { p: Politician }) {
                       color: 'var(--text)',
                     }}
                   >
-                    <span style={{ fontSize: 16 }}>🔗</span>
+                    <span style={{ fontSize: 12, color: 'var(--muted)', fontFamily: 'ui-monospace, monospace' }}>↗</span>
                     <div style={{ flex: 1, overflow: 'hidden' }}>
                       <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--accent)', marginBottom: 2 }}>
                         {f.title}
@@ -310,15 +309,17 @@ function RailCard({ title, children }: { title: string; children: React.ReactNod
   )
 }
 
-function EmptyTab({ icon, title, description }: { icon: string; title: string; description: string }) {
-  return (
-    <div style={{ padding: '64px 0', textAlign: 'center', maxWidth: 480, margin: '0 auto' }}>
-      <div style={{ fontSize: 48, marginBottom: 16 }}>{icon}</div>
-      <div style={{ fontSize: 18, fontWeight: 500, color: 'var(--text)', marginBottom: 8 }}>{title}</div>
-      <p style={{ fontSize: 14, color: 'var(--text-2)', lineHeight: 1.6 }}>{description}</p>
-    </div>
-  )
-}
+function EmptyTab({ title, description }: { title: string; description: string }) {
+    return (
+      <div style={{ padding: '64px 0', textAlign: 'center', maxWidth: 480, margin: '0 auto' }}>
+        <Mono size={10} color="var(--muted)" style={{ letterSpacing: '0.14em', textTransform: 'uppercase', display: 'block', marginBottom: 12 }}>
+          Próximamente
+        </Mono>
+        <div style={{ fontSize: 18, fontWeight: 500, color: 'var(--text)', marginBottom: 8 }}>{title}</div>
+        <p style={{ fontSize: 14, color: 'var(--text-2)', lineHeight: 1.6 }}>{description}</p>
+      </div>
+    )
+  }
 
 function PatrimonySection({ p }: { p: Politician }) {
   if (p.assets.length === 0) return null

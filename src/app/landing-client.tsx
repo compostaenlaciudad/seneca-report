@@ -650,7 +650,7 @@ export function LandingClient({ politicians }: { politicians: Politician[] }) {
         flexWrap: 'wrap',
       }}>
         <Mono size={11} color="var(--muted)">
-          El antídoto al algoritmo político · hack.indies.la 2026 · by abri.
+          El antídoto al algoritmo · hack.indies.la 2026 · by abri.
         </Mono>
         <div style={{ display: 'flex', gap: 18, flexWrap: 'wrap' }}>
           {FOOTER_LINKS.map((link) => (

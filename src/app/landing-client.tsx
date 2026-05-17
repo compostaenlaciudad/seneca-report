@@ -52,7 +52,7 @@ export function LandingClient({ politicians }: { politicians: Politician[] }) {
   const router = useRouter();
   const [q, setQ] = useState('');
   const [quoteIdx, setQuoteIdx] = useState(0);
-  const featured = politicians[0];
+  const featured = politicians.find(p => p.slug === 'ruben-rocha-moya') ?? politicians[0];
 
   useEffect(() => {
     const interval = setInterval(() => {

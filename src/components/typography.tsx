@@ -1,4 +1,12 @@
-import type { CSSProperties, ReactNode } from 'react';
+import type { ComponentPropsWithoutRef, CSSProperties, ReactNode } from 'react';
+
+export type MonoProps = {
+  children: ReactNode;
+  size?: number;
+  weight?: number;
+  color?: string;
+  style?: CSSProperties;
+} & Pick<ComponentPropsWithoutRef<'span'>, 'className'>;
 
 /** Mono inline label — for numbers, IDs, source citations, kicker indices. */
 export function Mono({
@@ -7,16 +15,11 @@ export function Mono({
   weight = 500,
   color,
   style,
-}: {
-  children: ReactNode;
-  size?: number;
-  weight?: number;
-  color?: string;
-  style?: CSSProperties;
-}) {
+  className,
+}: MonoProps) {
   return (
     <span
-      className="mono"
+      className={className ? `mono ${className}` : 'mono'}
       style={{
         fontSize: size,
         lineHeight: 1.3,

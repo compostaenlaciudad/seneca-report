@@ -571,17 +571,27 @@ chrome.runtime.onMessage.addListener((message) => {
     updateIcon()
 
     if (!isEnabled) {
-      // Remove all badges and highlights
+      // Remove badges
       document.querySelectorAll('.seneca-badge').forEach(el => el.remove())
+      
+      // Remove name highlights — unwrap the span, restore plain text
       document.querySelectorAll('[data-seneca-processed]').forEach(el => {
         el.removeAttribute('data-seneca-processed')
       })
+
+      // Find and unwrap highlighted name spans
+      document.querySelectorAll('span[style*="border-bottom"]').forEach(span => {
+        if (span.style.borderBottom && span.style.cursor === 'pointer') {
+          const text = document.createTextNode(span.textContent)
+          span.parentNode?.replaceChild(text, span)
+        }
+      })
+
       closePanel()
       closeVerifyPanel()
       closeVerifyPopup()
       processedNodes = new WeakSet()
     } else {
-      // Re-scan when re-enabled
       setTimeout(() => scanAndInject(), 500)
     }
   }

@@ -30,9 +30,8 @@
       font-size: 11px;
     }
 
-    /* ===== Header band (navy) ===== */
     .header {
-      padding: 14px 16px 14px;
+      padding: 14px 16px;
       background: var(--brand-deep);
       color: #fff;
       display: flex;
@@ -44,27 +43,23 @@
       width: 32px; height: 32px;
       background: #fff; color: var(--brand-deep);
       border-radius: 3px;
-      font-family: var(--sans);
       font-size: 18px; font-weight: 800;
       flex-shrink: 0;
     }
     .wordmark {
       font-family: var(--sans);
-      font-size: 18px;
-      font-weight: 800;
+      font-size: 18px; font-weight: 800;
       letter-spacing: 0.08em;
-      line-height: 1;
-      margin-bottom: 4px;
+      line-height: 1; margin-bottom: 4px;
     }
     .tagline {
-      font-family: var(--mono);
       font-size: 10px;
       color: rgba(255,255,255,0.7);
       letter-spacing: 0.04em;
       font-style: italic;
     }
 
-    /* ===== Status row ===== */
+    /* Status row */
     .status {
       display: flex;
       align-items: center;
@@ -76,24 +71,57 @@
       letter-spacing: 0.14em;
       text-transform: uppercase;
       font-weight: 700;
-      color: var(--green);
     }
     .status-dot {
-      width: 7px; height: 7px;
-      background: var(--green);
+      width: 8px; height: 8px;
       border-radius: 50%;
+      flex-shrink: 0;
+      transition: background 300ms ease, box-shadow 300ms ease;
+    }
+    .status-dot.active {
+      background: var(--green);
       box-shadow: 0 0 0 3px rgba(22,163,74,0.18);
       animation: pulse 1.6s infinite;
-      flex-shrink: 0;
+    }
+    .status-dot.paused {
+      background: var(--muted-2);
+      box-shadow: none;
+      animation: none;
     }
     @keyframes pulse {
       0%, 100% { box-shadow: 0 0 0 3px rgba(22,163,74,0.18); }
-      50%      { box-shadow: 0 0 0 6px rgba(22,163,74,0.04); }
+      50%       { box-shadow: 0 0 0 6px rgba(22,163,74,0.04); }
     }
     .status-text { flex: 1; }
-    .status-meta { font-size: 9px; color: var(--muted); letter-spacing: 0.12em; font-weight: 600; }
+    .status-text.active { color: var(--green); }
+    .status-text.paused { color: var(--muted); }
 
-    /* ===== Summary tiles ===== */
+    .toggle-btn {
+      border: none;
+      border-radius: 4px;
+      padding: 4px 10px;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      font-family: var(--mono);
+      text-transform: uppercase;
+      transition: background 150ms ease;
+    }
+    .toggle-btn.active {
+      background: #fef2f2;
+      color: var(--red);
+      border: 1px solid #fecaca;
+    }
+    .toggle-btn.active:hover { background: #fee2e2; }
+    .toggle-btn.paused {
+      background: #f0fdf4;
+      color: var(--green);
+      border: 1px solid #bbf7d0;
+    }
+    .toggle-btn.paused:hover { background: #dcfce7; }
+
+    /* Summary tiles */
     .summary {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
@@ -107,66 +135,51 @@
       display: flex; flex-direction: column; gap: 4px;
     }
     .summary-num {
-      font-size: 20px;
-      font-weight: 700;
+      font-size: 20px; font-weight: 700;
       letter-spacing: -0.02em;
-      color: var(--ink);
-      line-height: 1;
+      color: var(--ink); line-height: 1;
       font-variant-numeric: tabular-nums;
     }
-    .summary-num.red    { color: var(--red); }
-    .summary-num.amber  { color: var(--amber); }
-    .summary-num.green  { color: var(--green); }
+    .summary-num.red   { color: var(--red); }
+    .summary-num.amber { color: var(--amber); }
+    .summary-num.green { color: var(--green); }
     .summary-label {
-      font-size: 8px;
-      color: var(--muted);
+      font-size: 8px; color: var(--muted);
       letter-spacing: 0.14em;
-      text-transform: uppercase;
-      font-weight: 600;
+      text-transform: uppercase; font-weight: 600;
     }
 
-    /* ===== Body ===== */
+    /* Body */
     .body { padding: 14px 16px 8px; }
 
     .section-label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 9px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--muted);
+      display: flex; align-items: center; gap: 8px;
+      font-size: 9px; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--muted);
       margin-bottom: 10px;
     }
     .section-label::after {
-      content: "";
-      flex: 1;
-      height: 1px;
+      content: ""; flex: 1; height: 1px;
       background: var(--rule);
     }
     .section-label .count {
       padding: 2px 6px;
-      background: var(--ink);
-      color: #fff;
-      font-weight: 700;
-      letter-spacing: 0.06em;
+      background: var(--ink); color: #fff;
+      font-weight: 700; letter-spacing: 0.06em;
       border-radius: 2px;
     }
 
-    /* ===== Politicians list ===== */
+    /* Politicians list */
     .politicians {
-      display: flex;
-      flex-direction: column;
+      display: flex; flex-direction: column;
       border: 1px solid var(--rule);
-      border-radius: 3px;
-      overflow: hidden;
+      border-radius: 3px; overflow: hidden;
     }
     .politician-row {
       display: grid;
       grid-template-columns: auto 1fr auto;
       align-items: center;
-      gap: 11px;
-      padding: 10px 12px;
+      gap: 11px; padding: 10px 12px;
       background: #fff;
       border-bottom: 1px solid var(--rule);
       cursor: pointer;
@@ -175,31 +188,23 @@
     .politician-row:last-child { border-bottom: none; }
     .politician-row:hover { background: var(--paper); }
 
-    /* mini badge — mirrors the press-credential inline badge */
     .mini-badge {
-      display: inline-flex;
-      align-items: stretch;
+      display: inline-flex; align-items: stretch;
       height: 22px;
       border: 1px solid var(--ink);
-      border-radius: 3px;
-      overflow: hidden;
-      font-family: var(--mono);
-      font-size: 11px;
-      font-weight: 700;
-      line-height: 1;
-      letter-spacing: 0.02em;
+      border-radius: 3px; overflow: hidden;
+      font-size: 11px; font-weight: 700;
+      line-height: 1; letter-spacing: 0.02em;
     }
     .mini-badge-brand {
       display: inline-flex; align-items: center; justify-content: center;
       padding: 0 5px;
-      background: var(--brand-deep);
-      color: #fff;
+      background: var(--brand-deep); color: #fff;
       font-size: 11px;
     }
     .mini-badge-score {
       display: inline-flex; align-items: center;
-      padding: 0 7px;
-      background: #fff;
+      padding: 0 7px; background: #fff;
       color: var(--red);
       font-variant-numeric: tabular-nums;
       border-left: 1px solid var(--ink);
@@ -209,56 +214,75 @@
 
     .politician-name {
       font-family: var(--sans);
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--ink);
-      line-height: 1.2;
-      white-space: nowrap;
-      overflow: hidden;
+      font-size: 13px; font-weight: 600;
+      color: var(--ink); line-height: 1.2;
+      white-space: nowrap; overflow: hidden;
       text-overflow: ellipsis;
     }
     .politician-meta {
       display: block;
-      font-family: var(--mono);
-      font-size: 9px;
-      color: var(--muted);
+      font-size: 9px; color: var(--muted);
       letter-spacing: 0.1em;
-      text-transform: uppercase;
-      margin-top: 3px;
+      text-transform: uppercase; margin-top: 3px;
     }
     .politician-alerts {
-      font-size: 10px;
-      color: var(--red);
-      font-weight: 700;
-      letter-spacing: 0.04em;
+      font-size: 10px; color: var(--red);
+      font-weight: 700; letter-spacing: 0.04em;
       padding-right: 4px;
     }
     .politician-alerts.warn { color: var(--amber); }
     .politician-alerts.ok   { color: var(--green); }
 
-    /* ===== Footer ===== */
+    /* Verify hint */
+    .verify-hint {
+      margin-top: 12px;
+      padding: 8px 12px;
+      background: var(--paper);
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      font-size: 10px;
+      color: var(--muted);
+      line-height: 1.5;
+      text-align: center;
+    }
+    .verify-hint strong { color: var(--ink); }
+
+    /* Footer */
     .footer {
-      display: flex;
-      align-items: center;
+      display: flex; align-items: center;
       justify-content: space-between;
       padding: 11px 16px;
       background: var(--paper);
       border-top: 1px solid var(--rule);
     }
     .footer-link {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--brand);
-      letter-spacing: 0.04em;
+      font-size: 11px; font-weight: 700;
+      color: var(--brand); letter-spacing: 0.04em;
       text-decoration: none;
       border-bottom: 1px dashed transparent;
     }
     .footer-link:hover { border-bottom-color: var(--brand); }
     .footer-version {
-      font-size: 9px;
-      color: var(--muted-2);
-      letter-spacing: 0.14em;
-      font-weight: 600;
+      font-size: 9px; color: var(--muted-2);
+      letter-spacing: 0.14em; font-weight: 600;
+    }
+
+    /* Paused overlay */
+    .paused-overlay {
+      display: none;
+      padding: 20px 16px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.6;
+      border-bottom: 1px solid var(--rule);
+    }
+    .paused-overlay.visible { display: block; }
+    .paused-overlay .pause-icon {
+      font-size: 28px;
+      display: block;
+      margin-bottom: 8px;
+      opacity: 0.4;
     }
   </style>
 </head>
@@ -273,155 +297,174 @@
   </div>
 
   <div class="status" id="status-row">
-    <span class="status-dot" id="status-dot"></span>
-    <span class="status-text" id="status-text">Monitoreo activo</span>
-    <button id="toggle-btn" style="
-      background: #dc2626;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      padding: 3px 8px;
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      cursor: pointer;
-      font-family: ui-monospace, monospace;
-    ">PAUSAR</button>
-  </div>
-  
-  <script>
-    const toggleBtn = document.getElementById('toggle-btn')
-    const statusDot = document.getElementById('status-dot')
-    const statusText = document.getElementById('status-text')
-  
-    chrome.storage.sync.get(['senecaEnabled'], (result) => {
-      const enabled = result.senecaEnabled !== false
-      updateUI(enabled)
-    })
-  
-    toggleBtn.addEventListener('click', () => {
-      chrome.storage.sync.get(['senecaEnabled'], (result) => {
-        const current = result.senecaEnabled !== false
-        const next = !current
-        
-        chrome.storage.sync.set({ senecaEnabled: next })
-        updateUI(next)
-  
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-          if (tabs[0]) {
-            chrome.tabs.sendMessage(tabs[0].id, { type: 'TOGGLE', enabled: next })
-          }
-        })
-      })
-    })
-  
-    function updateUI(enabled) {
-      if (enabled) {
-        statusDot.style.background = '#16a34a'
-        statusText.textContent = 'Monitoreo activo'
-        toggleBtn.textContent = 'PAUSAR'
-        toggleBtn.style.background = '#dc2626'
-      } else {
-        statusDot.style.background = '#94a3b8'
-        statusText.textContent = 'Pausado'
-        toggleBtn.textContent = 'ACTIVAR'
-        toggleBtn.style.background = '#16a34a'
-      }
-    }
-  </script>
-
-  <div class="summary">
-    <div class="summary-tile">
-      <div class="summary-num">5</div>
-      <div class="summary-label">Detectados</div>
-    </div>
-    <div class="summary-tile">
-      <div class="summary-num red">2</div>
-      <div class="summary-label">Riesgo alto</div>
-    </div>
-    <div class="summary-tile">
-      <div class="summary-num amber">3</div>
-      <div class="summary-label">Moderado</div>
-    </div>
+    <span class="status-dot active" id="status-dot"></span>
+    <span class="status-text active" id="status-text">Monitoreo activo</span>
+    <button id="toggle-btn" class="toggle-btn active">Pausar</button>
   </div>
 
-  <div class="body">
+  <div class="paused-overlay" id="paused-overlay">
+    <span class="pause-icon">⏸</span>
+    El escudo está pausado.<br>
+    Actívalo para detectar políticos<br>en esta página.
+  </div>
 
-    <div class="section-label">
-      Detectados en esta página
-      <span class="count">05</span>
+  <div id="active-content">
+    <div class="summary">
+      <div class="summary-tile">
+        <div class="summary-num" id="detected-count">10</div>
+        <div class="summary-label">Monitoreados</div>
+      </div>
+      <div class="summary-tile">
+        <div class="summary-num red">4</div>
+        <div class="summary-label">Riesgo alto</div>
+      </div>
+      <div class="summary-tile">
+        <div class="summary-num amber">4</div>
+        <div class="summary-label">Elevado</div>
+      </div>
     </div>
 
-    <div class="politicians">
-
-      <div class="politician-row">
-        <span class="mini-badge warn">
-          <span class="mini-badge-brand">⚖</span>
-          <span class="mini-badge-score">63</span>
-        </span>
-        <span>
-          <span class="politician-name">Ricardo Monreal</span>
-          <span class="politician-meta">MORENA · ZAC</span>
-        </span>
-        <span class="politician-alerts warn">▲4</span>
+    <div class="body">
+      <div class="section-label">
+        Políticos monitoreados
+        <span class="count">10</span>
       </div>
 
-      <div class="politician-row">
-        <span class="mini-badge warn">
-          <span class="mini-badge-brand">⚖</span>
-          <span class="mini-badge-score">58</span>
-        </span>
-        <span>
-          <span class="politician-name">Xóchitl Gálvez</span>
-          <span class="politician-meta">PAN · CDMX</span>
-        </span>
-        <span class="politician-alerts warn">▲3</span>
+      <div class="politicians">
+        <div class="politician-row">
+          <span class="mini-badge">
+            <span class="mini-badge-brand">⚖</span>
+            <span class="mini-badge-score">8</span>
+          </span>
+          <span>
+            <span class="politician-name">Rubén Rocha Moya</span>
+            <span class="politician-meta">MORENA · SIN</span>
+          </span>
+          <span class="politician-alerts">▲3</span>
+        </div>
+
+        <div class="politician-row">
+          <span class="mini-badge">
+            <span class="mini-badge-brand">⚖</span>
+            <span class="mini-badge-score">12</span>
+          </span>
+          <span>
+            <span class="politician-name">Alejandro Moreno</span>
+            <span class="politician-meta">PRI · CAMP</span>
+          </span>
+          <span class="politician-alerts">▲4</span>
+        </div>
+
+        <div class="politician-row">
+          <span class="mini-badge">
+            <span class="mini-badge-brand">⚖</span>
+            <span class="mini-badge-score">22</span>
+          </span>
+          <span>
+            <span class="politician-name">Manuel Velasco</span>
+            <span class="politician-meta">PVEM · CHIS</span>
+          </span>
+          <span class="politician-alerts">▲4</span>
+        </div>
+
+        <div class="politician-row">
+          <span class="mini-badge">
+            <span class="mini-badge-brand">⚖</span>
+            <span class="mini-badge-score">38</span>
+          </span>
+          <span>
+            <span class="politician-name">Jorge Romero</span>
+            <span class="politician-meta">PAN · CDMX</span>
+          </span>
+          <span class="politician-alerts">▲4</span>
+        </div>
+
+        <div class="politician-row">
+          <span class="mini-badge warn">
+            <span class="mini-badge-brand">⚖</span>
+            <span class="mini-badge-score">58</span>
+          </span>
+          <span>
+            <span class="politician-name">Xóchitl Gálvez</span>
+            <span class="politician-meta">PAN · HGO</span>
+          </span>
+          <span class="politician-alerts warn">▲2</span>
+        </div>
+
+        <div class="politician-row">
+          <span class="mini-badge warn">
+            <span class="mini-badge-brand">⚖</span>
+            <span class="mini-badge-score">62</span>
+          </span>
+          <span>
+            <span class="politician-name">Alejandra Lagunes</span>
+            <span class="politician-meta">PVEM · CDMX</span>
+          </span>
+          <span class="politician-alerts warn">▲2</span>
+        </div>
+
+        <div class="politician-row">
+          <span class="mini-badge warn">
+            <span class="mini-badge-brand">⚖</span>
+            <span class="mini-badge-score">63</span>
+          </span>
+          <span>
+            <span class="politician-name">Ricardo Monreal</span>
+            <span class="politician-meta">MORENA · ZAC</span>
+          </span>
+          <span class="politician-alerts warn">▲2</span>
+        </div>
+
+        <div class="politician-row">
+          <span class="mini-badge ok">
+            <span class="mini-badge-brand">⚖</span>
+            <span class="mini-badge-score">71</span>
+          </span>
+          <span>
+            <span class="politician-name">Jorge Álvarez Máynez</span>
+            <span class="politician-meta">MC · ZAC</span>
+          </span>
+          <span class="politician-alerts ok">▲2</span>
+        </div>
+
+        <div class="politician-row">
+          <span class="mini-badge ok">
+            <span class="mini-badge-brand">⚖</span>
+            <span class="mini-badge-score">74</span>
+          </span>
+          <span>
+            <span class="politician-name">Claudia Sheinbaum</span>
+            <span class="politician-meta">MORENA · CDMX</span>
+          </span>
+          <span class="politician-alerts warn">▲2</span>
+        </div>
+
+        <div class="politician-row">
+          <span class="mini-badge warn">
+            <span class="mini-badge-brand">⚖</span>
+            <span class="mini-badge-score">52</span>
+          </span>
+          <span>
+            <span class="politician-name">Layda Sansores</span>
+            <span class="politician-meta">MORENA · CAMP</span>
+          </span>
+          <span class="politician-alerts">▲3</span>
+        </div>
       </div>
 
-      <div class="politician-row">
-        <span class="mini-badge">
-          <span class="mini-badge-brand">⚖</span>
-          <span class="mini-badge-score">24</span>
-        </span>
-        <span>
-          <span class="politician-name">Manuel Velasco</span>
-          <span class="politician-meta">PVEM · CHIS</span>
-        </span>
-        <span class="politician-alerts">▲9</span>
+      <div class="verify-hint">
+        <strong>Tip:</strong> Selecciona cualquier texto en la página<br>
+        y verifica declaraciones con Séneca →
       </div>
-
-      <div class="politician-row">
-        <span class="mini-badge">
-          <span class="mini-badge-brand">⚖</span>
-          <span class="mini-badge-score">38</span>
-        </span>
-        <span>
-          <span class="politician-name">Jorge Romero</span>
-          <span class="politician-meta">PAN · CDMX</span>
-        </span>
-        <span class="politician-alerts">▲6</span>
-      </div>
-
-      <div class="politician-row">
-        <span class="mini-badge warn">
-          <span class="mini-badge-brand">⚖</span>
-          <span class="mini-badge-score">62</span>
-        </span>
-        <span>
-          <span class="politician-name">Alejandra Lagunes</span>
-          <span class="politician-meta">PVEM · CDMX</span>
-        </span>
-        <span class="politician-alerts warn">▲2</span>
-      </div>
-
     </div>
-
   </div>
 
   <div class="footer">
-    <a href="https://seneca.report" target="_blank" class="footer-link">seneca.report ↗</a>
-    <span class="footer-version">REL · 2025.05</span>
+    <a href="https://seneca-report.vercel.app" target="_blank" class="footer-link">seneca.report ↗</a>
+    <span class="footer-version">v1.0 · MX</span>
   </div>
+
+  <script src="popup.js"></script>
 
 </body>
 </html>

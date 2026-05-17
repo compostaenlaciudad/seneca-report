@@ -5,7 +5,8 @@
   "description": "Detecta políticos mexicanos en cualquier página web y muestra su expediente verificado. El antídoto al algoritmo.",
   "permissions": [
     "activeTab",
-    "storage"
+    "storage",
+    "tabs"
   ],
   "host_permissions": [
     "<all_urls>"

@@ -650,7 +650,7 @@ export function LandingClient({ politicians }: { politicians: Politician[] }) {
         flexWrap: 'wrap',
       }}>
         <Mono size={11} color="var(--muted)">
-          SÉNECA · Lucius Annaeus, 4 a.C. – 65 d.C.
+          El antídoto al algoritmo político · hack.indies.la 2026 · by abri.
         </Mono>
         <div style={{ display: 'flex', gap: 18, flexWrap: 'wrap' }}>
           {FOOTER_LINKS.map((link) => (

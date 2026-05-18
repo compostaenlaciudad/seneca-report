@@ -128,7 +128,7 @@ function SearchPageInner({ politicians }: { politicians: Politician[] }) {
           gap: 14,
           background: 'var(--bg)',
           position: 'sticky',
-          top: 0,
+          top: 45,
           zIndex: 5,
           flexWrap: 'wrap',
         }}
@@ -228,7 +228,7 @@ function SearchPageInner({ politicians }: { politicians: Politician[] }) {
         </div>
       </div>
 
-      <div className="main-grid" style={{ display: 'grid', gridTemplateColumns: '240px 1fr', minHeight: 'calc(100vh - 120px)' }}>
+      <div className="main-grid" style={{ display: 'grid', gridTemplateColumns: '240px 1fr', height: 'calc(100vh - 102px)', overflow: 'hidden', overscrollBehavior: 'none' }}>
         {/* Mobile overlay */}
         {sidebarOpen && (
           <div
@@ -249,7 +249,9 @@ function SearchPageInner({ politicians }: { politicians: Politician[] }) {
             borderRight: '1px solid var(--border)',
             padding: '24px 22px',
             background: 'var(--surface)',
-            position: 'relative',
+            height: '100%',
+            overflowY: 'auto',
+            overscrollBehavior: 'none',
             zIndex: 10,
           }}
           data-open={sidebarOpen}
@@ -355,7 +357,7 @@ function SearchPageInner({ politicians }: { politicians: Politician[] }) {
         </aside>
 
         {/* result list */}
-        <div style={{ padding: '20px 28px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div style={{ padding: '20px 28px 48px', display: 'flex', flexDirection: 'column', gap: 12, overflowY: 'auto', height: '100%', overscrollBehavior: 'none' }}>
           {sorted.length === 0 && (
             <div style={{ padding: '48px 0', textAlign: 'center' }}>
               <Mono size={13} color="var(--muted)">

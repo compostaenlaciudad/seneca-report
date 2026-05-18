@@ -259,7 +259,7 @@ export function LandingClient({ politicians }: { politicians: Politician[] }) {
             {/* Suggestions */}
             <div style={{ marginTop: 14, display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
               <Mono size={10} color="var(--muted)">Sugerencias</Mono>
-              {politicians.slice(0, 5).map((p) => (
+              {politicians.slice(0, 4).map((p) => (
                 <button
                   key={p.id}
                   onClick={() => setQ(p.name.split(' ').slice(0, 2).join(' '))}

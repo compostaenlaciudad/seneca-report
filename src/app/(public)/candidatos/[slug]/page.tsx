@@ -33,39 +33,41 @@ export default async function ProfilePage({ params }: { params: Promise<{ slug: 
         <Mono size={11} color="var(--muted)">/</Mono>
         <Mono size={11} color="var(--text)">{p.name.split(' ').slice(0, 2).join(' ')}</Mono>
         <div style={{ marginLeft: 'auto', display: 'flex', gap: 6 }}>
-          <a
-            href={`/card/${p.slug}`}
-            target="_blank"
-            rel="noopener noreferrer"
+          <span
+            title="Próximamente"
             style={{
               fontSize: 12,
               fontWeight: 500,
-              color: 'var(--text-2)',
+              color: 'var(--muted)',
               padding: '5px 10px',
               border: '1px solid var(--border)',
               borderRadius: 6,
               background: 'transparent',
-              cursor: 'pointer',
+              cursor: 'not-allowed',
+              opacity: 0.5,
               textDecoration: 'none',
             }}
           >
             Compartir
-          </a>
+          </span>
           {['PDF', 'Citar', 'Comparar'].map((b) => (
-            <button
+            <span
               key={b}
+              title="Próximamente"
               style={{
                 fontSize: 12,
                 fontWeight: 500,
-                color: 'var(--text-2)',
+                color: 'var(--muted)',
                 padding: '5px 10px',
                 border: '1px solid var(--border)',
                 borderRadius: 6,
                 background: 'transparent',
+                cursor: 'not-allowed',
+                opacity: 0.5,
               }}
             >
               {b}
-            </button>
+            </span>
           ))}
         </div>
       </div>
